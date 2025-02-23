@@ -24,6 +24,16 @@ jobs:
           registry: ${{env.REGISTRY}}
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0.3
+        with:
+          envkey_DATABASE_URL: "file:./dev.db"
+          envkey_PASSWORD_PEPPER: ${{secrets.PASSWORD_PEPPER}}
+          envkey_JWT_SECRET: ${{secrets.JWT_SECRET}}
+          envkey_SMTP_PASS_RESTORE_PASSWORD: ${{secrets.SMTP_PASS_RESTORE_PASSWORD}}
+          envkey_SMTP_PASS_NOREPLY: ${{secrets.SMTP_PASS_NOREPLY}}
+          envkey_SITE_ORIGIN: https://titorelli.ru
+          envkey_NEXT_PUBLIC_YM_COUNTER_ID: 99574934
       - name: Build and push
         id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
