@@ -1,0 +1,303 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// #region User
+model User {
+  id                    Int         @id @default(autoincrement())
+  username              String      @unique
+  contacts              UserContact[]
+  passwordHash          String
+  passwordSalt          String
+  sessions              UserSession[]
+  consents              UserConsent[]
+  resetPasswordRequests UserResetPasswordRequest[]
+  accountMembership     AccountMember[]
+  accountInvites        AccountInvite[]
+  notifications         UserNotification[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  @@index([username])
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+// #endregion
+
+// #region UserContact
+model UserContact {
+  id              Int               @id @default(autoincrement())
+  // 'email' | 'phone' | 'tg-username' | 'tg-user-id'
+  type                  String
+  primary               Boolean     @default(false)
+  email                 String?
+  emailConfirmed        Boolean?
+  emailDisposable       Boolean?
+  emailCorporate        Boolean?
+  phone                 String?
+  phoneInvalid          Boolean?
+  // 'out-of-service' | 'cant-reach' | 'wrong-person' | 'other:${reason}'
+  phoneInvalidReason    String?
+  tgUsername            String?
+  tgUserId              String?
+  user                  User        @relation(fields: [userId], references: [id])
+  userId                Int
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  @@index([type])
+  @@index([email])
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+// #endregion
+
+// #region UserSession
+/*
+Todo:
+1. Add a job to clean expired user sessions
+*/
+model UserSession {
+  id            Int         @id @default(autoincrement())
+  token         String      
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+  revoked       Boolean
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  @@index([token])
+  @@index([userId])
+}
+// #endregion
+
+// #region UserConsent
+model UserConsent {
+  id            Int         @id @default(autoincrement())
+  // 'terms' | 'pdp' | 'subsc' | 'cookie'
+  type          String
+  terms         Boolean?
+  pdp           Boolean?
+  sub           Boolean?
+  cookie        Boolean?
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+// #endregion
+
+
+// #region UserResetPasswordRequest
+/*
+Add a `AccountDeletionRequest`
+or get rid of `UserResetPasswordRequest`
+
+At least, create a job to garbage collect
+*/
+model UserResetPasswordRequest {
+  id            Int         @id @default(autoincrement())
+  token         String
+  expiredAt     DateTime
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  @@index([token])
+  @@index([userId])
+}
+// #endregion
+
+// #region UserNotification
+/*
+Make a job that automatically receives offline notifications
+*/
+model UserNotification {
+  id                Int         @id @default(autoincrement())
+  flash             Boolean     @default(false)
+  user              User        @relation(fields: [userId], references: [id])
+  userId            Int
+  type              String
+  payload           String
+  received          Boolean     @default(false)
+  read              Boolean     @default(false)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  @@index([flash])
+  @@index([userId])
+  @@index([received])
+  @@index([read])
+  @@index([createdAt])
+}
+// #endregion
+
+// #region Account
+/*
+When account is deleted,
+should be some of backup and restore with all data
+processes to be performed by administrator
+In case if account deleted maliciously or
+in result of tragic coincidence
+*/
+model Account {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  members       AccountMember[] 
+  invites       AccountInvite[]
+  bots          ManagedBot[]
+  accessTokens  AccessToken[]
+  models        ClassificationModel[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  @@index([name])
+}
+// #endregion
+
+// #region AccountMember
+/*
+Should be viewer role at all?
+*/
+model AccountMember {
+  id            Int         @id @default(autoincrement())
+  // 'owner' | 'viewer' | 'editor'
+  role          String
+  user          User       @relation(fields: [userId], references: [id])
+  userId        Int
+  account       Account     @relation(fields: [accountId], references: [id])
+  accountId     Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  @@index([accountId])
+}
+// #endregion
+
+// #region AccountInvite
+/*
+Add garbadge collection job to remove expired invites
+*/
+model AccountInvite {
+  id            Int         @id @default(autoincrement())
+  // 'viwer' | 'editor'
+  role          String
+  user          User?       @relation(fields: [userId], references: [id])
+  // Set if and only if invite issued to registered user
+  userId        Int?
+  // 'email' | 'phone' | 'username'
+  identityType  String
+  email         String?
+  phone         String?
+  username      String?
+  account       Account     @relation(fields: [accountId], references: [id])
+  accountId     Int
+  expiredAt     DateTime
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  @@index([identityType])
+  @@index([email])
+  @@index([phone])
+  @@index([username])
+  @@index([userId])
+  @@index([accountId])
+}
+// #endregion
+
+// #region AccessTokens
+model AccessToken {
+  id                      Int                     @id @default(autoincrement())
+  token                   String
+  name                    String
+  revoked                 Boolean                 @default(false)
+  description             String                  @default("")
+  account                 Account                 @relation(fields: [accountId], references: [id])
+  accountId               Int
+  bypassTelemetry         Boolean                 @default(false)
+  bots                    ManagedBot[]
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+}
+// #endregion
+
+// #region ManagedBot
+model ManagedBot {
+  id                      Int                     @id @default(autoincrement())
+  name                    String
+  engine                  String                  @default("titus")
+  code                    String                  @unique
+  description             String
+  state                   String                  @default("created")
+  bypassTelemetry         Boolean                 @default(false)
+  scopes                  String                  @default("")
+  tgUsername              String?
+  tgFirstName             String?
+  tgLastName              String?
+  tgUserId                Int?
+  tgBotToken              String?                 @unique
+  canJoinGroups           Boolean
+  canReadAllGroupMessages Boolean
+  supportsInlineQueries   Boolean
+  dockhostImage           String?
+  dockhostContainer       String?
+  dockhostProject         String?
+  account                 Account                 @relation(fields: [accountId], references: [id])
+  accountId               Int
+  accessToken             AccessToken             @relation(fields: [accessTokenId], references: [id])
+  accessTokenId           Int
+  model                   ClassificationModel     @relation(fields: [modelId], references: [id])
+  modelId                 Int
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  @@index([accountId])
+  @@index([accessTokenId])
+  @@index([code])
+}
+// #endregion
+
+// #region ClassificationModel
+model ClassificationModel {
+  id                      Int                     @id @default(autoincrement())
+  name                    String
+  code                    String
+  description             String
+  account                 Account                 @relation(fields: [accountId], references: [id])
+  accountId               Int
+  bots                    ManagedBot[]
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  @@index([accountId])
+  @@index([code])
+}
+// #endregion
+
+// // #region Client
+// /*
+// This model exists ony for edit purposes.
+
+// Reading of client data should be
+// performed in another servcie
+// */
+// model Client {
+//   id            Int         @id @default(autoincrement())
+//   secretHash    String
+//   secretSalt    String
+//   // 'bot' | 'console'
+//   role          String
+//   /* [
+//     | ':modelId/predict'
+//     | ':modelId/train'
+//     | ':modelId/exact_match/train'
+//     | ':modelId/totems/train'
+//     | 'cas/train'
+//     | 'console/clients'
+//   ] */
+//   scopes        String  
+//   createdAt     DateTime    @default(now())
+//   updatedAt     DateTime    @updatedAt
+//   @@index([createdAt])
+//   @@index([updatedAt])
+// }
+// // #endregion
