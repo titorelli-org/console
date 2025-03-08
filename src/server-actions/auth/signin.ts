@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { UserService } from '@/lib/server/services/user-service'
 import { UserSessionService } from '@/lib/server/services/user-session-service'
 import { sessionTokenCookieName, signinFormInitialState } from '@/constants'
-import { SigninFormState } from '@/components/authorization/signin-form'
+import { SigninFormState } from '@/components/auth/signin-form'
 
 export async function signin(prevState: SigninFormState, form: FormData) {
   const userService = new UserService()

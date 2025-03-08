@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { AuthorizationLayout } from "@/layouts/authorization-layout";
-import { resetPassword } from "@/server-actions/authorization/reset-password";
-import { ResetPasswordForm } from "@/components/authorization/reset-password-form";
+import { AuthorizationLayout } from "@/layouts/auth-layout";
+import { resetPassword } from "@/server-actions/auth/reset-password";
+import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 import { getEmailService } from "@/lib/server/services/instances";
 
 export default async function ResetPasswordEmailLandingPage(props: {

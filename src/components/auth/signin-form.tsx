@@ -55,7 +55,7 @@ export function SigninForm({ className, action, ...props }: SigninFormProps) {
           <div className="flex items-center">
             <Label htmlFor="password">Пароль</Label>
             <Link
-              href="/authorization/restore"
+              href="/auth/restore"
               className="ml-auto text-sm underline-offset-4 hover:underline"
             >
               Восстановление пароля
@@ -72,7 +72,7 @@ export function SigninForm({ className, action, ...props }: SigninFormProps) {
       <div className="text-center text-sm">
         Нет профиля?{" "}
         <Link
-          href="/authorization/signup"
+          href="/auth/signup"
           className="underline underline-offset-4"
         >
           Зарегистрироваться

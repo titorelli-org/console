@@ -9,15 +9,15 @@ export const getUserInAction = async () => {
   const sessionToken = c.get(sessionTokenCookieName)?.value
 
   if (!sessionToken)
-    throw new Error('Can\'t access page without authorization')
+    return null
 
   if (!await userSessionService.verifySessionToken(sessionToken))
-    throw new Error('Token invalid')
+    return null
 
   const user = await userSessionService.getUserBySessionToken(sessionToken)
 
   if (!user)
-    throw new Error('Such user not authorized')
+    return null
 
   return user
 }

@@ -6,12 +6,18 @@ import { getAccountService } from "@/lib/server/services/instances"
 import { mapFilterAsync } from "@/lib/utils"
 import { ProfileAccountVm } from "@/types/my-profile"
 import { AccountMember, User } from "@prisma/client"
+import { unauthorized } from "next/navigation"
 
 const getOwnerFromMembers = (members: (AccountMember & { user: User | null })[]) =>
   members.find(({ role }) => role === 'owner')
 
 export const getAccounts = async () => {
   const user = await getUserInAction()
+
+  if (!user) {
+    unauthorized()
+  }
+
   const accountService = getAccountService()
   const accounts = await accountService.getAccountsUserMemberOf(user.id)
 
@@ -30,6 +36,6 @@ export const getAccounts = async () => {
         username: owner.user.username
       },
       role
-    } satisfies ProfileAccountVm
+    } as ProfileAccountVm
   })
 }

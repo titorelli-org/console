@@ -1,10 +1,10 @@
 import {
   SignupForm,
   SignupFormInitialValues,
-} from "@/components/authorization/signup-form";
-import { AuthorizationLayout } from "@/layouts/authorization-layout";
+} from "@/components/auth/signup-form";
+import { AuthorizationLayout } from "@/layouts/auth-layout";
 import { getTokenService } from "@/lib/server/services/instances";
-import { signup } from "@/server-actions/authorization/signup";
+import { signup } from "@/server-actions/auth/signup";
 import { AccountValueTypes } from "@/types/authoriaztion";
 
 export default async function SignupPage({

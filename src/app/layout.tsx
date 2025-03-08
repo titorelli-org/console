@@ -1,8 +1,11 @@
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 import { Geist } from "next/font/google";
 
-import { QueryClientProvider } from "@/components/query-client-provider";
 import { MetrikaScript } from "@/components/metrika-script";
+
+import { cookies } from "next/headers";
+import { Providers } from "@/providers";
+import { sessionTokenCookieName } from "@/constants";
 
 import "./globals.css";
 
@@ -14,15 +17,19 @@ export const metadata = {
     "Titorelli platform helps you manage classification models for Telegram bots, providing advanced spam protection features.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const c = use(cookies());
+
   return (
     <html lang="ru">
       <body className={geist.className}>
-        <QueryClientProvider>{children}</QueryClientProvider>
+        <Providers session={c.get(sessionTokenCookieName)?.value ?? null}>
+          {children}
+        </Providers>
         {process.env.NODE_ENV === "production" && (
           <Suspense>
             <MetrikaScript />

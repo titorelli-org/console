@@ -1,26 +1,58 @@
-import { NextResponse, type NextRequest } from "next/server"
+import { unauthorized } from "next/navigation"
+import { z } from "zod"
+import { createZodRoute } from 'next-zod-route'
 import { getUserInRoute } from "@/lib/server/get-user-in-route"
 import { maskNumber, unmaskNumber } from "@/lib/server/keymask"
 import { getAccountService } from "@/lib/server/services/instances"
 import type { UserAccountVm } from "@/types/header"
 
-export const GET = async (req: NextRequest, { params }: { params: Promise<{ accountId: string }> }) => {
-  const accountId = unmaskNumber((await params).accountId)
-  const accountService = getAccountService()
-  const user = await getUserInRoute()
+export const GET = createZodRoute()
+  .params(
+    z.object({
+      accountId: z.string()
+    })
+  )
+  .handler(async (_, { params }) => {
+    const accountId = unmaskNumber(params.accountId)
+    const user = await getUserInRoute()
 
-  if (!user)
-    throw new Error('User not found')
+    if (!user)
+      unauthorized()
 
-  if (!accountId)
-    throw new Error('Account id not provided')
+    if (!accountId)
+      unauthorized()
 
-  const account = await accountService.getAccountUserMemberOf(user.id, accountId)
+    const accountService = getAccountService()
+    const account = await accountService.getAccountUserMemberOf(user.id, accountId)
 
-  if (!account)
-    throw new Error(`Cannot find account with id = ${accountId} in user id = ${user.id} accounts list`)
+    if (!account)
+      throw new Error(`Account not exist with given id = ${params.accountId}`)
 
-  const accountVm = { id: maskNumber(account.id), name: account.name } as UserAccountVm
+    return {
+      id: maskNumber(account.id),
+      name: account.name
+    } as UserAccountVm
+  })
 
-  return NextResponse.json(accountVm)
-}
+// export const GET = async (req: NextRequest, { params }: { params: Promise<{ accountId: string }> }) => {
+//   const accountId = unmaskNumber((await params).accountId)
+//   const accountService = getAccountService()
+//   const user = await getUserInRoute()
+
+//   if (!user) {
+//     unauthorized()
+//   }
+
+//   if (!accountId) {
+//     unauthorized()
+//   }
+
+//   const account = await accountService.getAccountUserMemberOf(user.id, accountId)
+
+//   if (!account)
+//     throw new Error(`Cannot find account with id = ${accountId} in user id = ${user.id} accounts list`)
+
+//   const accountVm = { id: maskNumber(account.id), name: account.name } as UserAccountVm
+
+//   return NextResponse.json(accountVm)
+// }

@@ -26,7 +26,7 @@ export const RedirectLink: FC = () => {
   }, [secondsLeft]);
 
   return (
-    <Link ref={ref} href="/authorization/signin">
+    <Link ref={ref} href="/auth/signin">
       Вы будете перенаправлены на страницу логина через {secondsLeft} секунд
     </Link>
   );

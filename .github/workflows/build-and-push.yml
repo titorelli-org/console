@@ -32,7 +32,7 @@ jobs:
           envkey_JWT_SECRET: ${{secrets.JWT_SECRET}}
           envkey_SMTP_PASS_RESTORE_PASSWORD: ${{secrets.SMTP_PASS_RESTORE_PASSWORD}}
           envkey_SMTP_PASS_NOREPLY: ${{secrets.SMTP_PASS_NOREPLY}}
-          envkey_SITE_ORIGIN: https://titorelli.ru
+          envkey_SITE_ORIGIN: https://next.titorelli.ru
           envkey_NEXT_PUBLIC_YM_COUNTER_ID: 99574934
       - name: Build and push
         id: push

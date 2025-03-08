@@ -1,8 +1,8 @@
-import { type SignupFormState } from '@/components/authorization/signup-form'
-import { type SigninFormState } from '@/components/authorization/signin-form'
-import { type RestoreFormState } from '@/components/authorization/restore-password-form'
+import { type SignupFormState } from '@/components/auth/signup-form'
+import { type SigninFormState } from '@/components/auth/signin-form'
+import { type RestoreFormState } from '@/components/auth/restore-password-form'
 import { type AddConcactFormState } from '@/components/my-profile/contacts-list/add-contact-form'
-import { type ResetFormState } from '@/components/authorization/reset-password-form'
+import { type ResetFormState } from '@/components/auth/reset-password-form'
 import { type LeaveFormState } from '@/components/my-profile/accounts-list/account-item/leave-button'
 
 export const sessionTokenCookieName = 'SID'

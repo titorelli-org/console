@@ -1,6 +1,6 @@
 'use server'
 
-import { type ResetFormState } from "@/components/authorization/reset-password-form";
+import { type ResetFormState } from "@/components/auth/reset-password-form";
 import { UserService } from "@/lib/server/services/user-service";
 
 export const resetPassword = async (prevState: ResetFormState, form: FormData) => {

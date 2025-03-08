@@ -210,7 +210,7 @@ export function SignupForm({
       <div className="text-center text-sm">
         Уже есть профиль?{" "}
         <Link
-          href="/authorization/signin"
+          href="/auth/signin"
           className="underline underline-offset-4"
         >
           Войти

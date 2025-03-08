@@ -23,7 +23,7 @@ export default function UserProfile() {
       { id: "3", type: "telegram", value: "@johndoe", confirmed: true },
     ],
     accounts: [
-      { id: "1", name: "Project A", ownerUsername: "alice", role: "editor" },
+      { id: "1", name: "Project A", ownerUsername: "alice", role: "member" },
       { id: "2", name: "Project B", ownerUsername: "bob", role: "viewer" },
     ],
   };

@@ -1,17 +1,45 @@
-import { NextResponse, type NextRequest } from "next/server";
 import { maskNumber, unmaskNumber } from "@/lib/server/keymask";
 import type { SelectorAccountMemberVm } from "@/types/account-members-selector";
-import { getAccountService } from "@/lib/server/services/instances";
+import { getAccountService, getSecurityService } from "@/lib/server/services/instances";
+import { createZodRoute } from "next-zod-route";
+import { z } from "zod";
+import { unauthorized } from "next/navigation";
+import { securityCheck } from "@/lib/server/security-check";
+import { getUserInRoute } from "@/lib/server/get-user-in-route";
 
-export const GET = async (req: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) => {
-  const accountId = unmaskNumber((await paramsPromise).id)
+export const GET = createZodRoute()
+  .params(z.object({
+    id: z.string()
+  }))
+  .handler(async (_req, { params }) => {
+  const accountId = unmaskNumber(params.id)
+  const user = await getUserInRoute()
 
   if (!accountId)
-    throw new Error('Account id not provided')
+    unauthorized()
+
+  if (!user)
+    unauthorized()
+
+  const securityService = getSecurityService()
+
+  await securityCheck(securityService.userHasAccessToAccountMembers, user.id, accountId)
 
   const accountService = getAccountService()
   const members = await accountService.getAccountMembers(accountId)
-  const membersVm = members.map(({ id, username }) => ({ id: maskNumber(id), username } as SelectorAccountMemberVm))
 
-  return NextResponse.json(membersVm)
-}
+  return members.map(({ id, username }) => ({ id: maskNumber(id), username } as SelectorAccountMemberVm))
+  })
+
+// export const GET = async (req: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) => {
+//   const accountId = unmaskNumber((await paramsPromise).id)
+
+//   if (!accountId)
+//     throw new Error('Account id not provided')
+
+//   const accountService = getAccountService()
+//   const members = await accountService.getAccountMembers(accountId)
+//   const membersVm = members.map(({ id, username }) => ({ id: maskNumber(id), username } as SelectorAccountMemberVm))
+
+//   return NextResponse.json(membersVm)
+// }

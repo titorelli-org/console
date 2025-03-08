@@ -1,6 +1,6 @@
 import { getUserSessionService } from "./services/instances"
 
-export const getIsAuthenticated = async (sessionToken: string | undefined) => {
+export const isTokenVerified = async (sessionToken: string | undefined) => {
   if (!sessionToken)
     return false
 

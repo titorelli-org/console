@@ -1,10 +1,12 @@
-import { NextResponse, type NextRequest } from "next/server";
 import type { UserNotification } from '@prisma/client'
 import { getUserInRoute } from "@/lib/server/get-user-in-route";
 import { getUserNotificationService } from "@/lib/server/services/instances";
-import type { GetHeaderNotificationsData, HeaderNotificationVm } from "@/types/user-notification";
+import type { HeaderNotificationVm } from "@/types/user-notification";
 import { maskNumber } from "@/lib/server/keymask";
 import { PaginatedItems } from "@/lib/server/PaginatedItems";
+import { createZodRoute } from "next-zod-route";
+import { z } from "zod";
+import { unauthorized } from "next/navigation";
 
 const dbNotificationToVm = ({
   id,
@@ -24,24 +26,47 @@ const dbNotificationToVm = ({
   received
 } as HeaderNotificationVm)
 
-export const POST = async (req: NextRequest) => {
-  const user = await getUserInRoute()
+export const POST = createZodRoute()
+  .body(z.object({
+    page: z.number(),
+    size: z.number()
+  }))
+  .handler(async (_, { body }) => {
+    const user = await getUserInRoute()
 
-  if (!user)
-    return NextResponse.json([])
+    if (!user)
+      unauthorized()
 
-  const { page, size } = await req.json() as Awaited<GetHeaderNotificationsData>
+    const userNotificationService = getUserNotificationService()
 
-  const userNotificationService = getUserNotificationService()
+    const [notifications, total] = await userNotificationService.getPaginatedNotifications(user.id, body.page, body.size)
 
-  const [notifications, total] = await userNotificationService.getPaginatedNotifications(user.id, page, size)
-
-  return NextResponse.json(
-    new PaginatedItems(
+    return new PaginatedItems(
       notifications.map(dbNotificationToVm),
       total,
-      page,
-      size
+      body.page,
+      body.size
     )
-  )
-}
+  })
+
+// export const POST = async (req: NextRequest) => {
+//   const user = await getUserInRoute()
+
+//   if (!user)
+//     return NextResponse.json([])
+
+//   const { page, size } = await req.json() as Awaited<GetHeaderNotificationsData>
+
+//   const userNotificationService = getUserNotificationService()
+
+//   const [notifications, total] = await userNotificationService.getPaginatedNotifications(user.id, page, size)
+
+//   return NextResponse.json(
+//     new PaginatedItems(
+//       notifications.map(dbNotificationToVm),
+//       total,
+//       page,
+//       size
+//     )
+//   )
+// }

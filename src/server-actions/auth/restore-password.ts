@@ -1,6 +1,6 @@
 'use server'
 
-import { RestoreFormState } from "@/components/authorization/restore-password-form"
+import { RestoreFormState } from "@/components/auth/restore-password-form"
 import { restoreFormInitialState } from "@/constants"
 import { getEmailService, getEmailValidationService, getUserService } from "@/lib/server/services/instances"
 

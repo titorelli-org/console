@@ -87,7 +87,7 @@ export function RestorePasswordForm({
       <div className="text-center text-sm">
         Нет профиля?{" "}
         <Link
-          href="/authorization/signup"
+          href="/auth/signup"
           className="underline underline-offset-4"
         >
           Зарегистрироваться

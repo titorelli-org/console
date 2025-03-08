@@ -15,7 +15,7 @@ import {
   getUserSessionService
 } from "@/lib/server/services/instances"
 import { maskNumber } from "@/lib/server/keymask"
-import { type SignupFormState } from "@/components/authorization/signup-form"
+import { type SignupFormState } from "@/components/auth/signup-form"
 import { mapFilterAsync } from "@/lib/utils"
 
 export async function signup(prevState: SignupFormState, form: FormData) {

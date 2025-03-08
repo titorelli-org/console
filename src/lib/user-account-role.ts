@@ -1,8 +1,7 @@
-export const userAccountRoleToDisplayName = (role: 'owner' | 'viewer' | 'editor' | 'invited') => {
+export const userAccountRoleToDisplayName = (role: 'owner' | 'member' | 'invited') => {
   switch (role) {
     case 'owner': return 'Владелец'
-    case 'viewer': return 'Зритель'
-    case 'editor': return 'Редактор'
+    case 'member': return 'Участник'
     case 'invited': return 'Приглашен'
     default:
       throw new Error('Unreachable')

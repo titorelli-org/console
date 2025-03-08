@@ -145,15 +145,15 @@ In case if account deleted maliciously or
 in result of tragic coincidence
 */
 model Account {
-  id            Int             @id @default(autoincrement())
-  name          String          @unique
-  members       AccountMember[] 
-  invites       AccountInvite[]
-  bots          ManagedBot[]
-  accessTokens  AccessToken[]
-  models        ClassificationModel[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id                Int             @id @default(autoincrement())
+  name              String          @unique
+  members           AccountMember[] 
+  invites           AccountInvite[]
+  bots              ManagedBot[]
+  accessTokens      AccessToken[]
+  models            ClassificationModel[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
   @@index([name])
 }
 // #endregion
@@ -164,9 +164,8 @@ Should be viewer role at all?
 */
 model AccountMember {
   id            Int         @id @default(autoincrement())
-  // 'owner' | 'viewer' | 'editor'
-  role          String
-  user          User       @relation(fields: [userId], references: [id])
+  role          String      // 'owner' | 'member'
+  user          User        @relation(fields: [userId], references: [id])
   userId        Int
   account       Account     @relation(fields: [accountId], references: [id])
   accountId     Int
@@ -182,13 +181,10 @@ Add garbadge collection job to remove expired invites
 */
 model AccountInvite {
   id            Int         @id @default(autoincrement())
-  // 'viwer' | 'editor'
-  role          String
+  role          String      // 'member'
   user          User?       @relation(fields: [userId], references: [id])
-  // Set if and only if invite issued to registered user
-  userId        Int?
-  // 'email' | 'phone' | 'username'
-  identityType  String
+  userId        Int?        // Set if and only if invite issued to registered user
+  identityType  String      // 'email' | 'phone' | 'username'
   email         String?
   phone         String?
   username      String?

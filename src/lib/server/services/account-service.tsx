@@ -41,6 +41,14 @@ export class AccountService {
     });
   }
 
+  public async accountExist(accountId: number) {
+    const accountsCount = await this.prisma.account.count({
+      where: { id: accountId },
+    });
+
+    return accountsCount >= 1;
+  }
+
   /**
    * @todo
    * Нужно понять, что происходит и что делать,
@@ -277,7 +285,7 @@ export class AccountService {
 
       await t.accountMember.update({
         where: { id: oldOwnerMember.id },
-        data: { role: "editor" },
+        data: { role: "member" },
       });
 
       return true;

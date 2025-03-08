@@ -395,7 +395,7 @@ export class EmailService {
     await this.createResetPasswordRequest(user.id, token, expiredAt);
 
     const url = new URL(
-      `/authorization/restore/reset/${token}`,
+      `/auth/restore/reset/${token}`,
       this.siteOrigin,
     );
 

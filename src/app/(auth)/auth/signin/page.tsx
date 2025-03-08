@@ -1,6 +1,6 @@
-import { AuthorizationLayout } from "@/layouts/authorization-layout";
-import { SigninForm } from "@/components/authorization/signin-form";
-import { signin } from "@/server-actions/authorization/signin";
+import { AuthorizationLayout } from "@/layouts/auth-layout";
+import { SigninForm } from "@/components/auth/signin-form";
+import { signin } from "@/server-actions/auth/signin";
 
 export default async function SigninPage() {
   return (

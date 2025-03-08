@@ -41,7 +41,7 @@ import { userAccountRoleToDisplayName } from "@/lib/user-account-role";
 
 const memberSchema = z.object({
   identity: z.string().min(1, "Идентификатор участника обязателен"),
-  role: z.enum(["viewer", "editor"]),
+  role: z.enum(["viewer", "member"]),
 });
 
 const formSchema = z.object({
@@ -148,11 +148,8 @@ export function AddAccountBtn({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="viewer">
-                            {userAccountRoleToDisplayName("viewer")}
-                          </SelectItem>
-                          <SelectItem value="editor">
-                            {userAccountRoleToDisplayName("editor")}
+                          <SelectItem value="member">
+                            {userAccountRoleToDisplayName("member")}
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>

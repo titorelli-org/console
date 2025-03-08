@@ -61,7 +61,7 @@ export const UserMenu: FC<{
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/authorization/signout">Выйти</Link>
+          <Link href="/auth/signout">Выйти</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

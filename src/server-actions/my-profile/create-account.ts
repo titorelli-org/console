@@ -8,6 +8,7 @@ import { maskNumber } from "@/lib/server/keymask"
 import { getAccountService } from "@/lib/server/services/instances"
 import { createArrayWithSingleValue } from "@/lib/utils"
 import { cookies } from "next/headers"
+import { unauthorized } from "next/navigation"
 
 export type CreateAccountActionResult = {
   success: boolean
@@ -41,6 +42,9 @@ export async function createAccount(form: FormData): Promise<CreateAccountAction
   const user = await getUserInAction()
   const { accountName, members } = formDataToObject<AddAccountFormValues>(form)
 
+  if (!user)
+    unauthorized()
+
   if (!accountName) {
     return { success: false, errors: { accountName: 'Название аккаунта не заполнено' } }
   }
@@ -52,7 +56,7 @@ export async function createAccount(form: FormData): Promise<CreateAccountAction
       return { success: false, errors: { members: createArrayWithSingleValue({ identity: 'Идентификатор участника обязателен' }, i) } }
     }
 
-    if (!(['editor', 'viewer'].includes(member.role))) {
+    if (!(['member', 'viewer'].includes(member.role))) {
       return { success: false, errors: { members: createArrayWithSingleValue({ role: 'Роль участника не указана' }, i) } }
     }
   }

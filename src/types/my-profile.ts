@@ -1,4 +1,4 @@
-export type ProfileAccountRoles = "viewer" | "editor" | "owner" | "invited"
+export type ProfileAccountRoles = "member" | "owner" | "invited"
 
 export type ProfileAccountVm = {
   id: string

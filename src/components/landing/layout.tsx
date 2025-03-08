@@ -10,8 +10,8 @@ export function Footer() {
     { name: "Connect to Bot", href: "#connect-bot" },
     { name: "Get Docker Image", href: "#docker-image" },
     { name: "Contact Support", href: "/support" },
-    { name: "Sign In", href: "/authorization/signin" },
-    { name: "Sign Up", href: "/authorization/signup" },
+    { name: "Sign In", href: "/auth/signin" },
+    { name: "Sign Up", href: "/auth/signup" },
     { name: "Restore Access", href: "/restore-access" },
   ];
 

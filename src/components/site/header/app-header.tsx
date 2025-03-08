@@ -31,12 +31,12 @@ export async function AppHeader() {
             <ul className="flex items-center gap-4">
               <li>
                 <Button asChild variant="ghost">
-                  <Link href="/authorization/signin">Войти</Link>
+                  <Link href="/auth/signin">Войти</Link>
                 </Button>
               </li>
               <li>
                 <Button asChild>
-                  <Link href="/authorization/signup">Зарегистрироваться</Link>
+                  <Link href="/auth/signup">Зарегистрироваться</Link>
                 </Button>
               </li>
             </ul>

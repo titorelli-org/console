@@ -1,6 +1,6 @@
-import { RestorePasswordForm } from "@/components/authorization/restore-password-form";
-import { AuthorizationLayout } from "@/layouts/authorization-layout";
-import { restorePassword } from "@/server-actions/authorization/restore-password";
+import { RestorePasswordForm } from "@/components/auth/restore-password-form";
+import { AuthorizationLayout } from "@/layouts/auth-layout";
+import { restorePassword } from "@/server-actions/auth/restore-password";
 
 export default function RestorePasswordPage() {
   return (
