@@ -1,4 +1,4 @@
-import { unauthorized } from "next/navigation"
+import { forbidden } from "next/navigation"
 import { getSecurityService } from "./services/instances"
 
 export const securityCheck = async <Args extends unknown[]>(unboundFn: (...args: Args) => Promise<boolean>, ...args: Args) => {
@@ -7,7 +7,7 @@ export const securityCheck = async <Args extends unknown[]>(unboundFn: (...args:
   const pass = unboundFn.apply(securityService, args)
 
   if (!pass)
-    unauthorized()
+    forbidden()
 
   return true
 }

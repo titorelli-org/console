@@ -7,25 +7,15 @@ import { createZodRoute } from "next-zod-route"
 
 export const GET = createZodRoute()
   .handler(async () => {
-    console.log(10)
-
     const user = await getUserInRoute()
-
-    console.log(12, 'user =', user)
 
     if (!user)
       unauthorized()
-
-    console.log(19)
   
     const accountService = getAccountService()
     
-    console.log(23)
-  
     const accounts = await accountService.getAccountsUserMemberOf(user.id)
 
-    console.log(27)
-  
     return accounts.map(({ id, name }) => ({ id: maskNumber(id), name } as UserAccountVm))
   })
 
