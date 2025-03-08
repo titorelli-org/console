@@ -5,7 +5,8 @@ import { activeAccountCookueName } from "@/constants"
 import { formDataToObject } from "@/lib/form-data"
 import { getUserInAction } from "@/lib/server/get-user-in-action"
 import { maskNumber } from "@/lib/server/keymask"
-import { getAccountService } from "@/lib/server/services/instances"
+import { securityCheck } from "@/lib/server/security-check"
+import { getAccountService, getSecurityService } from "@/lib/server/services/instances"
 import { createArrayWithSingleValue } from "@/lib/utils"
 import { cookies } from "next/headers"
 import { unauthorized } from "next/navigation"
@@ -44,6 +45,10 @@ export async function createAccount(form: FormData): Promise<CreateAccountAction
 
   if (!user)
     unauthorized()
+
+  const securityService = getSecurityService()
+
+  await securityCheck(securityService.userCanCreateAccount, user.id)
 
   if (!accountName) {
     return { success: false, errors: { accountName: 'Название аккаунта не заполнено' } }

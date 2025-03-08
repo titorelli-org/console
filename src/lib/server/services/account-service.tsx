@@ -169,7 +169,10 @@ export class AccountService {
       },
     });
 
-    return ((membership?.role ?? null) as ProfileAccountRoles) || null;
+    if (membership?.role == null)
+      return null
+
+    return membership.role as ProfileAccountRoles
   }
 
   /**

@@ -2,7 +2,7 @@
 
 import { getUserInAction } from "@/lib/server/get-user-in-action"
 import { maskNumber } from "@/lib/server/keymask"
-import { getAccountService } from "@/lib/server/services/instances"
+import { getAccountService, getSecurityService } from "@/lib/server/services/instances"
 import { mapFilterAsync } from "@/lib/utils"
 import { ProfileAccountVm } from "@/types/my-profile"
 import { AccountMember, User } from "@prisma/client"
@@ -19,14 +19,22 @@ export const getAccounts = async () => {
   }
 
   const accountService = getAccountService()
+  const securityService = getSecurityService()
+
   const accounts = await accountService.getAccountsUserMemberOf(user.id)
 
   return mapFilterAsync(accounts, async ({ id, name, members }) => {
     const owner = getOwnerFromMembers(members)
     const role = await accountService.getUserRoleInAccount(user.id, id)
+    const accessCheck = await securityService.userHasAccessToAccount(user.id, id)
 
-    if (!owner || !role || owner.user == null)
-      return null
+    switch (true) {
+      case !accessCheck:
+      case !owner:
+      case !role:
+      case owner?.user == null:
+        return null
+    }
 
     return {
       id: maskNumber(id),

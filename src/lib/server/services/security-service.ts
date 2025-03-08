@@ -15,6 +15,10 @@ export class SecurityService {
     return count >= 1
   }
 
+  public async userCanCreateAccount(_userId: number) {
+    return true
+  }
+
   // #region account tokens
   public async userHasAccessToAccountTokens(userId: number, accountId: number) {
     return this.userHasAccessToAccount(userId, accountId)
@@ -66,16 +70,8 @@ export class SecurityService {
     return this.userHasAccessToAccountMembers(userId, accountId)
   }
 
-  public async userCanLeaveAccount(userId: number, accountId: number) {
-    const count = await this.prisma.accountMember.count({
-      where: {
-        userId,
-        accountId,
-        role: { not: 'owner' }
-      }
-    })
-
-    return count >= 1
+  public async userCanLeaveAccount(_userId: number, _accountId: number) {
+    return true
   }
   // #endregion
 
