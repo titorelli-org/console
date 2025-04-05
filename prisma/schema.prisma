@@ -250,6 +250,7 @@ model ManagedBot {
   @@index([accountId])
   @@index([accessTokenId])
   @@index([code])
+  @@index([tgBotToken])
 }
 // #endregion
 
@@ -268,32 +269,3 @@ model ClassificationModel {
   @@index([code])
 }
 // #endregion
-
-// // #region Client
-// /*
-// This model exists ony for edit purposes.
-
-// Reading of client data should be
-// performed in another servcie
-// */
-// model Client {
-//   id            Int         @id @default(autoincrement())
-//   secretHash    String
-//   secretSalt    String
-//   // 'bot' | 'console'
-//   role          String
-//   /* [
-//     | ':modelId/predict'
-//     | ':modelId/train'
-//     | ':modelId/exact_match/train'
-//     | ':modelId/totems/train'
-//     | 'cas/train'
-//     | 'console/clients'
-//   ] */
-//   scopes        String  
-//   createdAt     DateTime    @default(now())
-//   updatedAt     DateTime    @updatedAt
-//   @@index([createdAt])
-//   @@index([updatedAt])
-// }
-// // #endregion

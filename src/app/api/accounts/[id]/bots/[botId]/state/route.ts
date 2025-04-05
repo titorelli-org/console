@@ -13,7 +13,6 @@ export const POST = createZodRoute()
     botId: z.string()
   }))
   .body(z.object({
-    id: z.string(),
     state: z.string()
   }))
   .handler(async (_req, { params, body }) => {
@@ -32,7 +31,7 @@ export const POST = createZodRoute()
 
     const securityService = getSecurityService()
 
-    securityCheck(securityService.userCanChangeBotState, user.id, accountId)
+    await securityCheck(securityService.userCanChangeBotState, user.id, accountId)
 
     const botService = getBotService()
     await botService.changeState(botId, body.state as BotState)

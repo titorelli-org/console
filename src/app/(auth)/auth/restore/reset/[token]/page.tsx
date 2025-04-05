@@ -16,11 +16,10 @@ export default async function ResetPasswordEmailLandingPage(props: {
   const success =
     await emailService.validateRestorePasswordTokenFromEmail(token);
 
-  if (!success) redirect("/authorization/restore/reset/fail");
+  if (!success) redirect("/auth/restore/reset/fail");
 
   return (
     <AuthorizationLayout coverImageVariant="restore">
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <ResetPasswordForm token={token} action={resetPassword as any} />
     </AuthorizationLayout>
   );

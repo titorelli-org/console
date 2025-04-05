@@ -34,7 +34,7 @@ export function BotList() {
     <div className="">
       <ContentActions>
         <Button onClick={() => setIsAddModalOpen(true)}>
-          <PlusCircle className="mr-2 h-4 w-4" /> Add Bot
+          <PlusCircle className="mr-2 h-4 w-4" /> Добавить
         </Button>
       </ContentActions>
       <div className="overflow-x-auto">
@@ -47,49 +47,51 @@ export function BotList() {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm text-gray-900 sm:pl-6"
                   >
-                    Name
+                    Имя
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm text-gray-900"
                   >
-                    Description
+                    Описание
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm text-gray-900"
                   >
-                    Created
+                    Создан
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm text-gray-900"
                   >
-                    State
+                    Состояние
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm text-gray-900"
                   >
-                    Model
+                    Модель
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm text-gray-900"
                   >
-                    Telemetry
+                    Телеметрия
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm text-gray-900"
-                  >
-                    Actions
-                  </th>
+                  >&nbsp;</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
                 {bots.map((bot) => (
-                  <BotListItem key={bot.id} bot={bot} accountId={String(accountId)} />
+                  <BotListItem
+                    key={bot.id}
+                    bot={bot}
+                    accountId={String(accountId)}
+                  />
                 ))}
               </tbody>
             </table>

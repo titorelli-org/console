@@ -7,6 +7,7 @@ import StateBadge from "./StateBadge";
 import ActionPanel from "./ActionPanel";
 import EditBotModal from "./EditBotModal";
 import { useBotControls } from "@/hooks/use-bot-controls";
+import { format } from "date-fns";
 
 interface BotListItemProps {
   bot: BotVm;
@@ -15,7 +16,7 @@ interface BotListItemProps {
 
 export default function BotListItem({ bot, accountId }: BotListItemProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { stateMutation } = useBotControls(accountId);
+  const { stateMutation, removeMutation } = useBotControls(accountId);
 
   return (
     <>
@@ -27,7 +28,7 @@ export default function BotListItem({ bot, accountId }: BotListItemProps) {
           <BotDescription description={bot.description} />
         </td>
         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-          {new Date(bot.createdAt).toLocaleDateString()}
+          {format(bot.createdAt, "dd.MM.yyyy hh:mm")}
         </td>
         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
           <StateBadge state={bot.state} />
@@ -46,8 +47,9 @@ export default function BotListItem({ bot, accountId }: BotListItemProps) {
         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
           <ActionPanel
             botState={bot.state}
+            botName={bot.name}
             onEdit={() => setIsEditModalOpen(true)}
-            onDelete={() => {}}
+            onDelete={() => removeMutation({ id: bot.id })}
             onStateChange={(state) => stateMutation({ state, id: bot.id })}
             onViewStats={() => {}}
           />

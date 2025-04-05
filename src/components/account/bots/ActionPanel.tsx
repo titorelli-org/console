@@ -8,6 +8,7 @@ import ConfirmationModal from "./ConfirmationModal";
 
 interface ActionPanelProps {
   botState: BotState;
+  botName: string;
   onEdit: () => void;
   onDelete: () => void;
   onStateChange: (state: BotState) => void;
@@ -16,6 +17,7 @@ interface ActionPanelProps {
 
 export default function ActionPanel({
   botState,
+  botName,
   onEdit,
   onDelete,
   onStateChange,
@@ -63,8 +65,6 @@ export default function ActionPanel({
     }
   };
 
-  const isDeleteDisabled = !["created", "stopped", "failed"].includes(botState);
-
   return (
     <div className="flex space-x-2">
       {getStateChangeButton()}
@@ -75,7 +75,6 @@ export default function ActionPanel({
         size="sm"
         variant="outline"
         onClick={() => setIsDeleteModalOpen(true)}
-        disabled={isDeleteDisabled}
       >
         <Trash2 className="w-4 h-4" />
       </Button>
@@ -89,8 +88,8 @@ export default function ActionPanel({
           setIsDeleteModalOpen(false);
           onDelete();
         }}
-        title="Delete Bot"
-        message="Are you sure you want to delete this bot? This action cannot be undone."
+        title="Удалить"
+        message={`Вы уверены, что хотите удалить бота "${botName}"? Это действие нельзя будет отменить`}
       />
     </div>
   );

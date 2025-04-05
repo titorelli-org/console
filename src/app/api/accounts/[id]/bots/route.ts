@@ -1,36 +1,44 @@
 import { unmaskNumber } from "@/lib/server/keymask";
-import { getBotService, getModelsService, getSecurityService } from "@/lib/server/services/instances";
+import {
+  getBotService,
+  getModelsService,
+  getSecurityService,
+} from "@/lib/server/services/instances";
 import { mapBotDtoToVm } from "@/types/bot";
 import { createZodRoute } from "next-zod-route";
 import { z } from "zod";
 import { unauthorized } from "next/navigation";
 import { getUserInRoute } from "@/lib/server/get-user-in-route";
-import { securityCheck } from '@/lib/server/security-check'
+import { securityCheck } from "@/lib/server/security-check";
 import { OperationStatus } from "@/lib/server/OperationStatus";
 
 export const GET = createZodRoute()
-  .params(z.object({
-    id: z.string()
-  }))
+  .params(
+    z.object({
+      id: z.string(),
+    }),
+  )
   .handler(async (_req, { params }) => {
-    const accountId = unmaskNumber(params.id)
-    const user = await getUserInRoute()
+    const accountId = unmaskNumber(params.id);
+    const user = await getUserInRoute();
 
-    if (!accountId)
-      unauthorized()
+    if (!accountId) unauthorized();
 
-    if (!user)
-      unauthorized()
+    if (!user) unauthorized();
 
-    const securityService = getSecurityService()
+    const securityService = getSecurityService();
 
-    await securityCheck(securityService.userHasAccessToAccountBots, user.id, accountId)
+    await securityCheck(
+      securityService.userHasAccessToAccountBots,
+      user.id,
+      accountId,
+    );
 
-    const botService = getBotService()
-    const bots = await botService.list(accountId)
+    const botService = getBotService();
+    const bots = await botService.list(accountId);
 
-    return bots.map(mapBotDtoToVm) 
-  })
+    return bots.map(mapBotDtoToVm);
+  });
 
 // export const GET = async ({ }: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) => {
 //   const { id: accountIdStr } = await paramsPromise
@@ -50,33 +58,35 @@ export const GET = createZodRoute()
 // }
 
 export const POST = createZodRoute()
-  .params(z.object({
-    id: z.string()
-  }))
-  .body(z.object({
-    name: z.string(),
-    description: z.string(),
-    bypassTelemetry: z.boolean(),
-    modelCode: z.string(),
-    accessTokenId: z.string(),
-    tgBotToken: z.string()
-  }))
+  .params(
+    z.object({
+      id: z.string(),
+    }),
+  )
+  .body(
+    z.object({
+      name: z.string(),
+      description: z.string(),
+      bypassTelemetry: z.boolean(),
+      modelCode: z.string(),
+      accessTokenId: z.string(),
+      tgBotToken: z.string(),
+    }),
+  )
   .handler(async (_req, { params, body: data }) => {
-    const accountId = unmaskNumber(params.id)
-    const user = await getUserInRoute()
+    const accountId = unmaskNumber(params.id);
+    const user = await getUserInRoute();
 
-    if (accountId == null)
-      unauthorized()
+    if (accountId == null) unauthorized();
 
-    if (!user)
-      unauthorized()
+    if (!user) unauthorized();
 
-    const securityService = getSecurityService()
+    const securityService = getSecurityService();
 
-    await securityCheck(securityService.userCanCreateBot, user.id, accountId)
+    await securityCheck(securityService.userCanCreateBot, user.id, accountId);
 
-    const botService = getBotService()
-    const modelsService = getModelsService()
+    const botService = getBotService();
+    const modelsService = getModelsService();
 
     await botService.create(accountId, {
       name: data.name,
@@ -84,11 +94,11 @@ export const POST = createZodRoute()
       bypassTelemetry: data.bypassTelemetry,
       modelId: await modelsService.getModelIdByCode(accountId, data.modelCode),
       accessTokenId: unmaskNumber(data.accessTokenId),
-      tgBotToken: data.tgBotToken
-    })
+      tgBotToken: data.tgBotToken,
+    });
 
-    return new OperationStatus(true)
-  })
+    return new OperationStatus(true);
+  });
 
 // export const POST = async (req: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) => {
 //   const { id: accountIdStr } = await paramsPromise
