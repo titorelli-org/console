@@ -23,7 +23,6 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/package.json ./package.json
-COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/.env ./.env.production
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/.next/ ./.next
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/public ./public
