@@ -18,7 +18,7 @@ import { FormField } from "@/components/ui/form";
 export const TokenSelector = memo(
   ({ accountId, onClickAdd }: { accountId: string; onClickAdd(): void }) => {
     const form = useFormContext<AddBotModalFormValues>();
-    const { data: tokens } = useGetTokens(accountId, {});
+    const { data: tokens } = useGetTokens(accountId);
 
     return (
       <div>
