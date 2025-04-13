@@ -48,11 +48,11 @@ export const mapBotDtoToVm = ({
   accessTokenId,
   modelId,
   createdAt,
-}: ManagedBot): BotVm => ({
+}: ManagedBot & { state: BotState }): BotVm => ({
   id: maskNumber(id),
   name,
   description,
-  state: state as BotState,
+  state,
   bypassTelemetry,
   accessTokenId: maskNumber(accessTokenId),
   modelId: maskNumber(modelId),
