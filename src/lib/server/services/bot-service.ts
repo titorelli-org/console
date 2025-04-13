@@ -55,22 +55,26 @@ export class BotService {
       tgBotToken: string;
     },
   ) {
-    console.group("create()");
+    console.log("BotService#create()");
 
     console.log("modelId", modelId);
     console.log("accessTokenId", accessTokenId);
 
     if (modelId == null || accessTokenId == null) return null;
 
-    const user = await this.tgGetMe(tgBotToken);
+    const tgBotUser = await this.tgGetMe(tgBotToken);
 
-    console.log("user =", user);
+    console.log("tgBotUser =", tgBotUser);
 
-    if (!user) return null;
+    if (!tgBotUser) return null;
+
+    console.log(71);
 
     const maybeBot = await this.prisma.managedBot.findFirst({
       where: { tgBotToken },
     });
+
+    console.log(77);
 
     if (maybeBot != null) {
       console.log("EXISTS!!!!");
@@ -78,27 +82,18 @@ export class BotService {
       throw new Error("Bot with given token already exists");
     }
 
-    return await this.prisma.$transaction(async (t) => {
+    console.log(85);
+
+    return this.prisma.$transaction(async (t) => {
       const { id } = await t.managedBot.create({
         data: {
           name,
           code: slugify(name),
           description,
           bypassTelemetry,
-          scopes:
-            "generic/predict generic/train generic/exact_match/train generic/totems/train cas/predict cas/train", // TODO: Remove
-          state: "created", // TODO: Remove
           accountId,
-          accessTokenId, // TODO: Remove
+          accessTokenId,
           modelId,
-          tgUsername: user.username,
-          tgFirstName: user.firstName,
-          tgLastName: "",
-          tgUserId: user.id,
-          canJoinGroups: user.canJoinGroups, // TODO: Remove
-          canReadAllGroupMessages: user.canReadAllGroupMessages, // TODO: Remove
-          supportsInlineQueries: user.supportsInlineQueries, // TODO: Remove
-          tgBotToken, // TODO: Remove
         },
       });
 
@@ -147,22 +142,23 @@ export class BotService {
 
     if (!bot) return null;
 
-    if (["created", "starting", "stopping", "failed"].includes(newState))
-      return null;
-
-    switch (`${bot.state}/${newState}`) {
-      case "starting/stopped":
-        return this.abort(botId);
-      case "created/running":
+    switch (newState) {
+      case "created":
+        return null; // Do nothing
+      case "starting":
         return this.start(botId);
-      case "stopped/running":
-        return this.start(botId);
-      case "failed/running":
-        return this.restart(botId);
-      case "running/stopped":
+      case "running":
+        return null; // Do nothing
+      case "stopping":
         return this.stop(botId);
+      case "stopped":
+        return null; // Do nothig
+      case "failed":
+        return null; // Do nothing
+      case 'deleted':
+        return this.remove(botId)
       default:
-        return null;
+        return null; // Do nothing
     }
   }
 
@@ -175,58 +171,15 @@ export class BotService {
   }
 
   public async getBotState(botId: number) {
-    console.log(
-      "requestedScopes =",
-      Reflect.get(this.titorelli, "requestedScopes"),
-    );
-    console.log(
-      "grantedScopes =",
-      Reflect.get(this.titorelli, "grantedScopes"),
-    );
-
     return (await this.titorelli.bots.getState(botId)) as Awaited<BotState>;
-
-    // const bot = await this.prisma.managedBot.findFirst({
-    //   where: { id: botId },
-    // });
-
-    // return (bot?.state as BotState | undefined) ?? null;
   }
 
   private async start(botId: number) {
     return this.titorelli.bots.update(botId, { state: "starting" });
-
-    // await this.prisma.managedBot.update({
-    //   where: { id: botId },
-    //   data: { state: "starting" },
-    // });
   }
 
   private async stop(botId: number) {
     return this.titorelli.bots.update(botId, { state: "stopping" });
-
-    // await this.prisma.managedBot.update({
-    //   where: { id: botId },
-    //   data: { state: "stopping" },
-    // });
-  }
-
-  private async abort(botId: number) {
-    return this.titorelli.bots.update(botId, { state: "stopping" });
-
-    // await this.prisma.managedBot.update({
-    //   where: { id: botId },
-    //   data: { state: "stopping" },
-    // });
-  }
-
-  private async restart(botId: number) {
-    return this.titorelli.bots.update(botId, { state: "starting" });
-
-    // await this.prisma.managedBot.update({
-    //   where: { id: botId },
-    //   data: { state: "starting" },
-    // });
   }
 
   private async tgGetMe(botToken: string) {

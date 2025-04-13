@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Play, Square, RotateCcw, Trash2, Edit, BarChart } from "lucide-react";
+import { Trash2, Edit, BarChart } from "lucide-react";
 import type { BotState } from "@/types/bot";
 import ConfirmationModal from "./ConfirmationModal";
+import { BotStateHelper } from "@/lib/helpers/bot-state";
 
 interface ActionPanelProps {
   botState: BotState;
@@ -29,40 +30,9 @@ export default function ActionPanel({
     onStateChange(state);
 
   const getStateChangeButton = () => {
-    switch (botState) {
-      case "created":
-      case "stopped":
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("running")}>
-            <Play className="w-4 h-4 mr-1" /> Запустить
-          </Button>
-        );
-      case "running":
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("stopped")}>
-            <Square className="w-4 h-4 mr-1" /> Остановить
-          </Button>
-        );
-      case "starting":
-      case "stopping":
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("stopped")}>
-            Отменить
-          </Button>
-        );
-      case "failed":
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("running")}>
-            <RotateCcw className="w-4 h-4 mr-1" /> Перезагрузить
-          </Button>
-        );
-      default:
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("running")}>
-            <RotateCcw className="w-4 h-4 mr-1" /> Сделать что-нибудь
-          </Button>
-        );
-    }
+    return new BotStateHelper(botState).getActionButton({
+      createChangeStateHandler,
+    });
   };
 
   return (

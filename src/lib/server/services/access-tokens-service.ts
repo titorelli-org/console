@@ -45,14 +45,14 @@ export class AcccessTokenService {
   }
 
   public async privateGetToken(tokenId: number, t?: Prisma.TransactionClient) {
-    const record = await (t ?? this.prisma).accessToken.findFirst({
+    const accessToken = await (t ?? this.prisma).accessToken.findFirst({
       where: { id: tokenId },
       select: {
         token: true,
       },
     });
 
-    return record?.token ?? null;
+    return accessToken?.token ?? null;
   }
 
   private generateToken() {

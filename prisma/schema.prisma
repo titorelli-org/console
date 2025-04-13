@@ -225,24 +225,24 @@ model ManagedBot {
   engine                  String                  @default("titus")
   code                    String                  @unique
   description             String
-  state                   String                  @default("created")
+  // state                   String                  @default("created")                                     // TODO: Remove
   bypassTelemetry         Boolean                 @default(false)
-  scopes                  String                  @default("")
-  tgUsername              String?
-  tgFirstName             String?
-  tgLastName              String?
-  tgUserId                Int?
+  // scopes                  String                  @default("")
+  // tgUsername              String?
+  // tgFirstName             String?
+  // tgLastName              String?
+  // tgUserId                Int?
   tgBotToken              String?                 @unique
-  canJoinGroups           Boolean
-  canReadAllGroupMessages Boolean
-  supportsInlineQueries   Boolean
-  dockhostImage           String?
-  dockhostContainer       String?
-  dockhostProject         String?
+  // canJoinGroups           Boolean                                                                         // TODO: Remove
+  // canReadAllGroupMessages Boolean                                                                         // TODO: Remove
+  // supportsInlineQueries   Boolean                                                                         // TODO: Remove
+  // dockhostImage           String?
+  // dockhostContainer       String?
+  // dockhostProject         String?
   account                 Account                 @relation(fields: [accountId], references: [id])
   accountId               Int
-  accessToken             AccessToken             @relation(fields: [accessTokenId], references: [id])
-  accessTokenId           Int
+  accessToken             AccessToken             @relation(fields: [accessTokenId], references: [id])    // TODO: Remove
+  accessTokenId           Int                                                                             // TODO: Remove
   model                   ClassificationModel     @relation(fields: [modelId], references: [id])
   modelId                 Int
   createdAt               DateTime                @default(now())

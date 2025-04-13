@@ -1,21 +1,18 @@
-import { inspect } from "node:util";
 import axios from "axios";
 import { env } from "@/lib/server/env";
 import { useSession } from "./use-session";
 import { sessionTokenCookieName } from "@/constants";
+import { OperationStatus } from "@/lib/server/OperationStatus";
 
 const client = axios.create({ baseURL: env.SITE_ORIGIN ?? "/" });
 
-client.interceptors.response.use(
-  (value) => value,
-  (error) => {
-    console.group("AXIOS RESPONSE ERROR");
-    console.error(inspect(error, false, null));
-    console.groupEnd();
+client.interceptors.response.use((value) => {
+  if (value.data != null && OperationStatus.matchShape(value.data)) {
+    Promise.reject(OperationStatus.from(value.data).toError);
+  }
 
-    return Promise.reject(error);
-  },
-);
+  return value;
+});
 
 export const useApiClient = () => {
   const session = useSession();

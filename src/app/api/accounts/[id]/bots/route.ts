@@ -19,14 +19,13 @@ export const GET = createZodRoute()
     }),
   )
   .handler(async (_req, { params }) => {
+    const securityService = getSecurityService();
     const accountId = unmaskNumber(params.id);
     const user = await getUserInRoute();
 
     if (!accountId) unauthorized();
 
     if (!user) unauthorized();
-
-    const securityService = getSecurityService();
 
     await securityCheck(
       securityService.userHasAccessToAccountBots,
@@ -39,23 +38,6 @@ export const GET = createZodRoute()
 
     return bots.map(mapBotDtoToVm);
   });
-
-// export const GET = async ({ }: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) => {
-//   const { id: accountIdStr } = await paramsPromise
-//   const accountId = unmaskNumber(accountIdStr)
-
-//   if (accountId == null)
-//     throw new Error('Account id not provided')
-
-//   // TODO: Check if account exist and user have access to it
-
-//   const botService = getBotService()
-//   const bots = await botService.list(accountId)
-
-//   const result = bots.map(mapBotDtoToVm)
-
-//   return NextResponse.json(result)
-// }
 
 export const POST = createZodRoute()
   .params(
@@ -74,6 +56,9 @@ export const POST = createZodRoute()
     }),
   )
   .handler(async (_req, { params, body: data }) => {
+    const botService = getBotService();
+    const modelsService = getModelsService();
+    const securityService = getSecurityService();
     const accountId = unmaskNumber(params.id);
     const user = await getUserInRoute();
 
@@ -81,47 +66,19 @@ export const POST = createZodRoute()
 
     if (!user) unauthorized();
 
-    const securityService = getSecurityService();
-
     await securityCheck(securityService.userCanCreateBot, user.id, accountId);
 
-    const botService = getBotService();
-    const modelsService = getModelsService();
-
-    await botService.create(accountId, {
-      name: data.name,
-      description: data.description,
-      bypassTelemetry: data.bypassTelemetry,
-      modelId: await modelsService.getModelIdByCode(accountId, data.modelCode),
-      accessTokenId: unmaskNumber(data.accessTokenId),
-      tgBotToken: data.tgBotToken,
-    });
-
-    return new OperationStatus(true);
+    return OperationStatus.call(async () =>
+      botService.create(accountId, {
+        name: data.name,
+        description: data.description,
+        bypassTelemetry: data.bypassTelemetry,
+        modelId: await modelsService.getModelIdByCode(
+          accountId,
+          data.modelCode,
+        ),
+        accessTokenId: unmaskNumber(data.accessTokenId),
+        tgBotToken: data.tgBotToken,
+      }),
+    );
   });
-
-// export const POST = async (req: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) => {
-//   const { id: accountIdStr } = await paramsPromise
-//   const accountId = unmaskNumber(accountIdStr)
-
-//   if (accountId == null)
-//     throw new Error('Account id not provided')
-
-//   const data = await req.json() as Awaited<BotCreateRequestDataVm>
-
-//   // TODO: Check if account exist and user have access to it
-
-//   const botService = getBotService()
-//   const modelsService = getModelsService()
-
-//   await botService.create(accountId, {
-//     name: data.name,
-//     description: data.description,
-//     bypassTelemetry: data.bypassTelemetry,
-//     modelId: await modelsService.getModelIdByCode(accountId, data.modelCode),
-//     accessTokenId: unmaskNumber(data.accessTokenId),
-//     tgBotToken: data.tgBotToken
-//   })
-
-//   return NextResponse.json({ ok: true })
-// }
