@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import NextError from "next/error";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,6 +39,12 @@ export default function Error({
   const error = tryToMakeZodError(propsError) ?? propsError;
   const message =
     error instanceof ZodError ? fromZodError(error).message : error.message;
+
+  return (
+    <>
+      <NextError statusCode={500} />
+    </>
+  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
