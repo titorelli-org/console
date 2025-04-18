@@ -117,18 +117,10 @@ export class BotService {
     if (!bot) return null;
 
     switch (newState) {
-      case "created":
-        return null; // Do nothing
       case "starting":
         return this.start(botId);
-      case "running":
-        return null; // Do nothing
       case "stopping":
         return this.stop(botId);
-      case "stopped":
-        return null; // Do nothig
-      case "failed":
-        return null; // Do nothing
       case "deleted":
         return this.remove(botId);
       default:
@@ -138,9 +130,9 @@ export class BotService {
 
   public async remove(botId: number) {
     return await this.prisma.$transaction(async (t) => {
-      await t.managedBot.delete({ where: { id: botId } });
-
       await this.titorelli.bots.remove(botId);
+
+      await t.managedBot.delete({ where: { id: botId } });
     });
   }
 

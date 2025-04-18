@@ -57,26 +57,26 @@ export class BotStateHelper {
       case "created":
       case "stopped":
         return (
-          <Button size="sm" onClick={createChangeStateHandler("running")}>
+          <Button size="sm" onClick={createChangeStateHandler("starting")}>
             <Play className="w-4 h-4 mr-1" /> Запустить
           </Button>
         );
       case "running":
         return (
-          <Button size="sm" onClick={createChangeStateHandler("stopped")}>
+          <Button size="sm" onClick={createChangeStateHandler("stopping")}>
             <Square className="w-4 h-4 mr-1" /> Остановить
           </Button>
         );
       case "starting":
       case "stopping":
         return (
-          <Button size="sm" onClick={createChangeStateHandler("stopped")}>
+          <Button size="sm" onClick={createChangeStateHandler("stopping")}>
             Отменить
           </Button>
         );
       case "failed":
         return (
-          <Button size="sm" onClick={createChangeStateHandler("running")}>
+          <Button size="sm" onClick={createChangeStateHandler("starting")}>
             <RotateCcw className="w-4 h-4 mr-1" /> Перезагрузить
           </Button>
         );
@@ -88,7 +88,7 @@ export class BotStateHelper {
         );
       default:
         return (
-          <Button size="sm" onClick={createChangeStateHandler("running")}>
+          <Button size="sm" onClick={createChangeStateHandler("starting")}>
             <RotateCcw className="w-4 h-4 mr-1" /> Сделать что-нибудь
           </Button>
         );
