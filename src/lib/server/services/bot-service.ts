@@ -55,34 +55,20 @@ export class BotService {
       tgBotToken: string;
     },
   ) {
-    console.log("BotService#create()");
-
-    console.log("modelId", modelId);
-    console.log("accessTokenId", accessTokenId);
-
-    if (modelId == null || accessTokenId == null) return null;
+    if (modelId == null || accessTokenId == null)
+      throw new Error("modelId or accessTokenId not provided");
 
     const tgBotUser = await this.tgGetMe(tgBotToken);
 
-    console.log("tgBotUser =", tgBotUser);
-
-    if (!tgBotUser) return null;
-
-    console.log(71);
+    if (!tgBotUser) throw new Error("Cannot get bot info (via getMe)");
 
     const maybeBot = await this.prisma.managedBot.findFirst({
       where: { tgBotToken },
     });
 
-    console.log(77);
-
     if (maybeBot != null) {
-      console.log("EXISTS!!!!");
-
       throw new Error("Bot with given token already exists");
     }
-
-    console.log(85);
 
     return this.prisma.$transaction(async (t) => {
       const { id } = await t.managedBot.create({
@@ -97,24 +83,16 @@ export class BotService {
         },
       });
 
-      console.log("id =", id);
-
       const accessToken = await this.accessTokensService.privateGetToken(
         accessTokenId,
         t,
       );
 
-      console.log("accessToken =", accessToken);
-
       if (!accessToken) {
-        console.log("Fail transaction");
-
         throw new Error(
           `Can\'t create bot because provided accessToken not exists by id = ${accessTokenId}`,
         );
       }
-
-      console.log("request to titorelli");
 
       await this.titorelli.bots.create({
         id,
@@ -126,10 +104,6 @@ export class BotService {
         scopes:
           "generic/predict generic/train generic/exact_match/train generic/totems/train cas/predict cas/train",
       });
-
-      console.log("complete request to titorelli");
-
-      console.groupEnd();
 
       return true;
     });
@@ -155,8 +129,8 @@ export class BotService {
         return null; // Do nothig
       case "failed":
         return null; // Do nothing
-      case 'deleted':
-        return this.remove(botId)
+      case "deleted":
+        return this.remove(botId);
       default:
         return null; // Do nothing
     }

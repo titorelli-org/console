@@ -25,7 +25,7 @@ export class OperationStatus implements OperationStatusShape {
     ...args: Args
   ): Promise<OperationStatus> {
     try {
-      const result = run(...args);
+      const result = await run(...args);
 
       return OperationStatus.ok(result);
     } catch (error) {
