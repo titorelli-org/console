@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Edit, BarChart } from "lucide-react";
 import type { BotState } from "@/types/bot";
 import ConfirmationModal from "./ConfirmationModal";
-import { BotStateHelper } from "@/lib/helpers/bot-state";
+import { BotStateHelper } from "@/lib/helpers/bot-state-helper"
 
 interface ActionPanelProps {
   botState: BotState;

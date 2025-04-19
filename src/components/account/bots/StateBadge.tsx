@@ -1,4 +1,4 @@
-import { BotStateHelper } from "@/lib/helpers/bot-state";
+import { BotStateHelper } from "@/lib/helpers/bot-state-helper";
 import type { BotState } from "@/types/bot";
 
 interface StateBadgeProps {

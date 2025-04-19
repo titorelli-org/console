@@ -30,16 +30,3 @@ export const GET = createZodRoute()
 
   return members.map(({ id, username }) => ({ id: maskNumber(id), username } as SelectorAccountMemberVm))
   })
-
-// export const GET = async (req: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) => {
-//   const accountId = unmaskNumber((await paramsPromise).id)
-
-//   if (!accountId)
-//     throw new Error('Account id not provided')
-
-//   const accountService = getAccountService()
-//   const members = await accountService.getAccountMembers(accountId)
-//   const membersVm = members.map(({ id, username }) => ({ id: maskNumber(id), username } as SelectorAccountMemberVm))
-
-//   return NextResponse.json(membersVm)
-// }

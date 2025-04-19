@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import NextError from "next/error";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -41,12 +40,6 @@ export default function Error({
     error instanceof ZodError ? fromZodError(error).message : error.message;
 
   return (
-    <>
-      <NextError statusCode={500} />
-    </>
-  );
-
-  return (
     <div className="min-h-screen bg-background flex flex-col">
       <main className="flex-grow flex items-center justify-center p-0 sm:p-4">
         <Card className="w-full max-w-2xl sm:rounded-lg sm:shadow-md border-0 sm:border">
@@ -66,7 +59,6 @@ export default function Error({
                 value={`https://error-tracking.titorelli.ru/error/${error.digest}`}
                 size={128}
                 level="M"
-                includeMargin={true}
               />
               <p className="text-sm text-center text-muted-foreground">
                 Код ошибки: {error.digest}

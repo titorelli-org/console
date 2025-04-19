@@ -23,13 +23,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const c = use(cookies());
+  const sessionStr = c.get(sessionTokenCookieName)?.value ?? null;
 
   return (
     <html lang="ru">
       <body className={geist.className}>
-        <Providers session={c.get(sessionTokenCookieName)?.value ?? null}>
-          {children}
-        </Providers>
+        <Providers session={sessionStr}>{children}</Providers>
         {process.env.NODE_ENV === "production" && (
           <Suspense>
             <MetrikaScript />

@@ -21,14 +21,3 @@ export const POST = createZodRoute()
 
     return null
   })
-
-// export const POST = async (req: NextRequest) => {
-//   await getUserInRoute()
-
-//   const userNotificationService = getUserNotificationService()
-//   const { ids: idsStr } = await req.json() as Awaited<ReceiveNotificationsData>
-
-//   await userNotificationService.markReceived(idsStr.map(idStr => unmaskNumber(idStr)))
-
-//   return new NextResponse(null, { status: 200 })
-// }

@@ -29,15 +29,3 @@ export const GET = createZodRoute()
 
     return flashNotifications.map(dbNotificationToVm)
   })
-
-// export const GET = async () => {
-//   const user = await getUserInRoute()
-
-//   if (!user)
-//     return NextResponse.json([])
-
-//   const userNotificationService = getUserNotificationService()
-//   const flashNotifications = await userNotificationService.getUnreceivedUserFlashNotifications(user.id)
-
-//   return NextResponse.json(flashNotifications.map(dbNotificationToVm))
-// }

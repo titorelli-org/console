@@ -11,9 +11,7 @@ import { useParams } from "next/navigation";
 
 export function BotList() {
   const { accountId } = useParams();
-  const { data: bots } = useGetBots(String(accountId), {
-    initialData: undefined,
-  });
+  const { data: bots } = useGetBots(String(accountId));
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 

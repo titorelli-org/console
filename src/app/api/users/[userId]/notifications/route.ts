@@ -48,25 +48,3 @@ export const POST = createZodRoute()
       body.size
     )
   })
-
-// export const POST = async (req: NextRequest) => {
-//   const user = await getUserInRoute()
-
-//   if (!user)
-//     return NextResponse.json([])
-
-//   const { page, size } = await req.json() as Awaited<GetHeaderNotificationsData>
-
-//   const userNotificationService = getUserNotificationService()
-
-//   const [notifications, total] = await userNotificationService.getPaginatedNotifications(user.id, page, size)
-
-//   return NextResponse.json(
-//     new PaginatedItems(
-//       notifications.map(dbNotificationToVm),
-//       total,
-//       page,
-//       size
-//     )
-//   )
-// }

@@ -33,26 +33,3 @@ export const GET = createZodRoute()
       name: account.name
     } as UserAccountVm
   })
-
-// export const GET = async (req: NextRequest, { params }: { params: Promise<{ accountId: string }> }) => {
-//   const accountId = unmaskNumber((await params).accountId)
-//   const accountService = getAccountService()
-//   const user = await getUserInRoute()
-
-//   if (!user) {
-//     unauthorized()
-//   }
-
-//   if (!accountId) {
-//     unauthorized()
-//   }
-
-//   const account = await accountService.getAccountUserMemberOf(user.id, accountId)
-
-//   if (!account)
-//     throw new Error(`Cannot find account with id = ${accountId} in user id = ${user.id} accounts list`)
-
-//   const accountVm = { id: maskNumber(account.id), name: account.name } as UserAccountVm
-
-//   return NextResponse.json(accountVm)
-// }

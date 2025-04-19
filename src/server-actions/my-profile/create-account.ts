@@ -2,7 +2,7 @@
 
 import { AddAccountFormValues } from "@/components/my-profile/create-account-btn"
 import { activeAccountCookueName } from "@/constants"
-import { formDataToObject } from "@/lib/form-data"
+import { formDataToObject } from "@/lib/helpers/form-data"
 import { getUserInAction } from "@/lib/server/get-user-in-action"
 import { maskNumber } from "@/lib/server/keymask"
 import { securityCheck } from "@/lib/server/security-check"

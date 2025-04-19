@@ -36,7 +36,7 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select";
-import { objectToFormData } from "@/lib/form-data";
+import { objectToFormData } from "@/lib/helpers/form-data";
 import { userAccountRoleToDisplayName } from "@/lib/user-account-role";
 
 const memberSchema = z.object({

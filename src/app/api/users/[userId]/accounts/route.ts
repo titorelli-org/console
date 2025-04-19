@@ -18,17 +18,3 @@ export const GET = createZodRoute()
 
     return accounts.map(({ id, name }) => ({ id: maskNumber(id), name } as UserAccountVm))
   })
-
-// export const GET = async () => {
-//   const user = await getUserInRoute()
-
-//   if (!user) {
-//     unauthorized()
-//   }
-
-//   const accountService = getAccountService()
-
-//   const accounts = await accountService.getAccountsUserMemberOf(user.id)
-
-//   return accounts.map(({ id, name }) => ({ id: maskNumber(id), name } as UserAccountVm))
-// }
