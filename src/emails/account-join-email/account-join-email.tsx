@@ -1,4 +1,4 @@
-import { userAccountRoleToDisplayName } from "@/lib/user-account-role";
+import { UserAccountRoleHelper } from "@/lib/helpers/user-account-role-helper";
 import {
   Body,
   Button,
@@ -59,7 +59,8 @@ export default function AccountJoinInvite({
             </Text>
             <Text className="text-zinc-300 text-base mb-4">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              Ваша роль: {userAccountRoleToDisplayName(invitedRole as any)}
+              Ваша роль:{" "}
+              {new UserAccountRoleHelper(invitedRole as any).displayName}
             </Text>
             <Section className="text-center my-8">
               <Button

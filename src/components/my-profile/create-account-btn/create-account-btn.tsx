@@ -37,7 +37,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { objectToFormData } from "@/lib/helpers/form-data";
-import { userAccountRoleToDisplayName } from "@/lib/user-account-role";
+import { UserAccountRoleHelper } from "@/lib/helpers/user-account-role-helper";
 
 const memberSchema = z.object({
   identity: z.string().min(1, "Идентификатор участника обязателен"),
@@ -81,7 +81,6 @@ export function AddAccountBtn({
     for (const [name, message] of Object.entries(result.errors)) {
       hasError = true;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       form.setError(name as any, message as any);
     }
 
@@ -149,7 +148,7 @@ export function AddAccountBtn({
                       <SelectContent>
                         <SelectGroup>
                           <SelectItem value="member">
-                            {userAccountRoleToDisplayName("member")}
+                            {new UserAccountRoleHelper("member").displayName}
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
