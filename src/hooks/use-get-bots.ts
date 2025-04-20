@@ -7,6 +7,7 @@ export const useGetBots = (accountId: string) => {
 
   return useSuspenseQuery({
     queryKey: ["accounts", accountId, "bots"],
+    refetchInterval: 3 * 1000 /* 3 seconds */,
     async queryFn() {
       const { data } = await apiClient.get<BotVm[]>(
         `/api/accounts/${accountId}/bots`,

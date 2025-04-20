@@ -1,9 +1,14 @@
 import { randomBytes } from "crypto";
 import { prismaClient } from "../prisma-client";
 import { Prisma } from "@prisma/client";
+import { getTokenService } from "./instances";
 
 export class AcccessTokenService {
   private prisma = prismaClient;
+
+  private get tokenService() {
+    return getTokenService();
+  }
 
   public async list(accountId: number) {
     return this.prisma.accessToken.findMany({
@@ -12,7 +17,7 @@ export class AcccessTokenService {
   }
 
   public async create(accountId: number, name: string, description?: string) {
-    const token = this.generateToken();
+    const token = await this.generateToken(accountId);
 
     const { id } = await this.prisma.accessToken.create({
       data: {
@@ -34,7 +39,17 @@ export class AcccessTokenService {
   }
 
   public async regenerate(tokenId: number) {
-    const token = this.generateToken();
+    const accessToken = await this.prisma.accessToken.findFirst({
+      where: { id: tokenId },
+      select: {
+        accountId: true,
+      },
+    });
+
+    if (!accessToken)
+      throw new Error(`Access token with id = ${tokenId} not found`);
+
+    const token = await this.generateToken(accessToken.accountId);
 
     await this.prisma.accessToken.update({
       where: { id: tokenId },
@@ -55,7 +70,7 @@ export class AcccessTokenService {
     return accessToken?.token ?? null;
   }
 
-  private generateToken() {
-    return randomBytes(20).toString("hex");
+  private async generateToken(accountId: number) {
+    return this.tokenService.generateApiAccessToken(accountId);
   }
 }

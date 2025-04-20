@@ -1,5 +1,6 @@
 export const env = {
   SITE_ORIGIN: process.env.SITE_ORIGIN!,
+  API_ORIGIN: process.env.API_ORIGIN!,
   JWT_SECRET: process.env.JWT_SECRET!,
   SMTP_PASS_RESTORE_PASSWORD: process.env.SMTP_PASS_RESTORE_PASSWORD!,
   SMTP_PASS_NOREPLY: process.env.SMTP_PASS_NOREPLY!,
