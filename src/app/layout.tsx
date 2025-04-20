@@ -8,6 +8,7 @@ import { Providers } from "@/providers";
 import { sessionTokenCookieName } from "@/constants";
 
 import "./globals.css";
+import { env } from "@/lib/server/env";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -29,7 +30,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className={geist.className}>
         <Providers session={sessionStr}>{children}</Providers>
-        {process.env.NODE_ENV === "production" && (
+        {env.NODE_ENV === "production" && (
           <Suspense>
             <MetrikaScript />
           </Suspense>

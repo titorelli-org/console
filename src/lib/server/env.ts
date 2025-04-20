@@ -1,9 +1,20 @@
-export const env = {
-  SITE_ORIGIN: process.env.SITE_ORIGIN!,
-  API_ORIGIN: process.env.API_ORIGIN!,
-  JWT_SECRET: process.env.JWT_SECRET!,
-  SMTP_PASS_RESTORE_PASSWORD: process.env.SMTP_PASS_RESTORE_PASSWORD!,
-  SMTP_PASS_NOREPLY: process.env.SMTP_PASS_NOREPLY!,
-  PASSWORD_PEPPER: process.env.PASSWORD_PEPPER!,
-  TITORELLI_HOST: process.env.TITORELLI_HOST!
-}
+import 'server-only'
+
+import { cleanEnv, str, url, num } from "envalid";
+
+export const env = cleanEnv(process.env, {
+  NODE_ENV: str(),
+  SITE_ORIGIN: url(),
+  API_ORIGIN: url(),
+  DATABASE_URL: str(),
+  PASSWORD_PEPPER: str(),
+  JWT_SECRET: str(),
+  SMTP_PASS_RESTORE_PASSWORD: str(),
+  SMTP_PASS_NOREPLY: str(),
+  TITORELLI_SERVICE_URL: url(),
+  TITORELLI_CLIENT_SECRET: str(),
+  OO_BASE_URL: url(),
+  OO_AUTH_CRED: str(),
+  KEYMASK_SEED: str(),
+  NEXT_PUBLIC_YM_COUNTER_ID: num(),
+});
