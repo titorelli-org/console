@@ -1,7 +1,7 @@
 import { type BotState } from "@/types/bot";
 
 import { Button } from "@/components/ui/button";
-import { Play, Square, RotateCcw, Trash2 } from "lucide-react";
+import { Play, RotateCcw, Trash2 } from "lucide-react";
 
 export class BotStateHelper {
   constructor(private state: BotState) {}
@@ -56,34 +56,33 @@ export class BotStateHelper {
     switch (this.state) {
       case "created":
       case "stopped":
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("starting")}>
-            <Play className="w-4 h-4 mr-1" /> Запустить
-          </Button>
-        );
-      case "running":
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("stopping")}>
-            <Square className="w-4 h-4 mr-1" /> Остановить
-          </Button>
-        );
-      case "starting":
-      case "stopping":
-        return (
-          <Button size="sm" onClick={createChangeStateHandler("stopping")}>
-            Отменить
-          </Button>
-        );
       case "failed":
         return (
           <Button size="sm" onClick={createChangeStateHandler("starting")}>
-            <RotateCcw className="w-4 h-4 mr-1" /> Перезагрузить
+            {this.state === "failed" ? (
+              <>
+                <RotateCcw className="w-4 h-4 mr-1" /> Перезагрузить
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4 mr-1" />
+                Запустить
+              </>
+            )}
           </Button>
         );
       case "deleted":
         return (
           <Button size="sm" onClick={createChangeStateHandler("deleted")}>
             <Trash2 className="w-4 h-4 mr-1" /> Убрать из списка
+          </Button>
+        );
+      case "running":
+      case "starting":
+      case "stopping":
+        return (
+          <Button loading size="sm">
+            {this.badgeText}
           </Button>
         );
       default:
