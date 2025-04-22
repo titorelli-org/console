@@ -1,7 +1,7 @@
 import { type BotState } from "@/types/bot";
 
 import { Button } from "@/components/ui/button";
-import { Play, RotateCcw, Trash2 } from "lucide-react";
+import { Play, RotateCcw, Trash2, Square } from "lucide-react";
 
 export class BotStateHelper {
   constructor(private state: BotState) {}
@@ -78,6 +78,11 @@ export class BotStateHelper {
           </Button>
         );
       case "running":
+        return (
+          <Button size="sm" onClick={createChangeStateHandler("stopping")}>
+            <Square className="w-4 h-4 mr-1" /> Остановить
+          </Button>
+        );
       case "starting":
       case "stopping":
         return (
