@@ -1,8 +1,8 @@
-import 'server-only'
+import "server-only";
 
-import { cleanEnv, str, url, num } from "envalid";
+import { cleanEnv, str, url, num, CleanedEnv } from "envalid";
 
-export const env = cleanEnv(process.env, {
+const config = {
   NODE_ENV: str(),
   SITE_ORIGIN: url(),
   API_ORIGIN: url(),
@@ -17,4 +17,12 @@ export const env = cleanEnv(process.env, {
   OO_AUTH_CRED: str(),
   KEYMASK_SEED: str(),
   NEXT_PUBLIC_YM_COUNTER_ID: num(),
-});
+} as const;
+
+export let env: CleanedEnv<typeof config>;
+
+if (process.env.NEXT_PHASE === "phase-production-build") {
+  env = process.env as any;
+} else {
+  env = cleanEnv(process.env, config);
+}
