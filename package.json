@@ -18,6 +18,7 @@
     "@maskito/core": "^3.2.0",
     "@maskito/phone": "^3.2.0",
     "@maskito/react": "^3.2.0",
+    "@parsekit/string-to-boolean": "^1.0.0",
     "@prisma/client": "^6.1.0",
     "@prisma/instrumentation": "^6.6.0",
     "@radix-ui/react-alert-dialog": "^1.1.4",

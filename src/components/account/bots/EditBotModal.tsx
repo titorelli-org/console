@@ -29,7 +29,6 @@ export default function EditBotModal({ isOpen, onClose, bot }: EditBotModalProps
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle form submission here
-    console.log({ name, description, telemetryEnabled })
     onClose()
   }
 
