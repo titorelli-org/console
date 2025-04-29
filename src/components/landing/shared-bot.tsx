@@ -12,7 +12,7 @@ export function SharedBot() {
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <Image
-              src="/images/landing/shared-bot/cover.jpeg"
+              src="/images/landing/shared-bot/cover.png"
               alt="Titorelli Bot"
               width={400}
               height={400}
@@ -36,7 +36,7 @@ export function SharedBot() {
                     d="M5 13l4 4L19 7"
                   ></path>
                 </svg>
-                Автоматическая фильтрация спама.
+                Автобан по списку известных скамеров
               </li>
               <li className="flex items-center">
                 <svg
@@ -53,7 +53,7 @@ export function SharedBot() {
                     d="M5 13l4 4L19 7"
                   ></path>
                 </svg>
-                Пользовательский интерфейс для управления.
+                Модель машинного обучения
               </li>
               <li className="flex items-center">
                 <svg
@@ -70,7 +70,24 @@ export function SharedBot() {
                     d="M5 13l4 4L19 7"
                   ></path>
                 </svg>
-                Обновления в реальном времени.
+                Простая установка
+              </li>
+              <li className="flex items-center">
+                <svg
+                  className="w-6 h-6 mr-2 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+                Обновление баз в реальном времени
               </li>
             </ul>
             <Button size="lg">Получить бота</Button>

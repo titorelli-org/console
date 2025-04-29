@@ -10,22 +10,19 @@ import { Container } from "../site/container";
 
 const advantages = [
   {
-    title: "Удобное управление.",
+    title: "No-code платформа",
     description: "Интуитивно понятный интерфейс для всех пользователей.",
-    // image: "/images/landing/advantages/adv-1.jpeg",
-    image: "/images/landing/advantages/yandexart-fbvm6ina8s37dh7tg98j.jpeg",
+    image: "/images/landing/advantages/adv-1.png",
   },
   {
-    title: "Эффективная защита.",
-    description: "Мощные алгоритмы для надежной защиты от спама.",
-    // image: "/images/landing/advantages/adv-2.jpeg",
-    image: "/images/landing/advantages/yandexart-fbvagphelp85jhk26uh6.jpeg",
+    title: "Высокая эффективность",
+    description: "Использование машинного обучения для удаления спама",
+    image: "/images/landing/advantages/adv-2.png",
   },
   {
-    title: "Гибкий выбор.",
-    description: "Разнообразные тарифные планы для любых нужд.",
-    // image: "/images/landing/advantages/adv-3.jpeg",
-    image: "/images/landing/advantages/yandexart-fbvit7vj0ubaqva8lgms.jpeg",
+    title: "REST API",
+    description: "Адаптация решения решения под индивидуальную задачу",
+    image: "/images/landing/advantages/adv-3.png",
   },
 ];
 
@@ -33,6 +30,9 @@ export function Advantages() {
   return (
     <section className="py-24 bg-muted">
       <Container>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold">Преимущества</h2>
+        </div>
         <div className="grid gap-8 md:grid-cols-3">
           {advantages.map((advantage, index) => (
             <Card key={index}>
