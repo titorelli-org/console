@@ -13,6 +13,7 @@ const config = {
   SMTP_PASS_NOREPLY: str(),
   TITORELLI_SERVICE_URL: url(),
   TITORELLI_CLIENT_SECRET: str(),
+  TITORELLI_DEMO_CLIENT_SECRET: str(),
   OO_BASE_URL: url(),
   OO_AUTH_CRED: str(),
   KEYMASK_SEED: str(),

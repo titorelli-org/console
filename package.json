@@ -41,7 +41,7 @@
     "@react-email/tailwind": "^1.0.4",
     "@sindresorhus/slugify": "^2.2.1",
     "@tanstack/react-query": "^5.62.11",
-    "@titorelli/client": "^2.5.1",
+    "@titorelli/client": "^3.2.0",
     "@types/html-to-text": "^9.0.4",
     "@types/lodash": "^4.17.15",
     "@types/nodemailer": "^6.4.17",

@@ -11,51 +11,42 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Container } from "../site/container";
+import { useDemoClassify } from "@/hooks/use-demo-classify";
 
 export function SpamChecker() {
   const [input, setInput] = useState("");
-  const [result, setResult] = useState<null | {
-    label: string;
-    confidence: number;
-    reason: string;
-  }>(null);
+
+  const { data, mutate } = useDemoClassify();
 
   const checkSpam = () => {
-    // This is a mock function. In a real application, you would call an API here.
-    const mockResult = {
-      label: Math.random() > 0.5 ? "spam" : "ham",
-      confidence: Math.random(),
-      reason: ["cas", "duplicate", "classifier"][Math.floor(Math.random() * 3)],
-    };
-    setResult(mockResult);
+    mutate({ text: input });
   };
 
   return (
     <section className="py-24 bg-muted">
       <Container className="max-w-2xl">
         <h2 className="text-3xl font-bold mb-8 text-center">
-          Try our spam detection
+          Попробуйте антиспам-движок на практике
         </h2>
         <Textarea
-          placeholder="Paste a spam example here..."
+          placeholder="Вставьте спам-сообщение сюда..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="mb-4"
+          className="mb-4 bg-white"
           rows={5}
         />
         <Button onClick={checkSpam} className="w-full mb-4">
-          Check for Spam
+          Проверить
         </Button>
-        {result && (
+        {data && (
           <Card>
             <CardHeader>
-              <CardTitle>Result</CardTitle>
+              <CardTitle>Результат</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                <p>Label: {result.label}</p>
-                <p>Confidence: {(result.confidence * 100).toFixed(2)}%</p>
-                <p>Reason: {result.reason}</p>
+                <p>Label: {data.label}</p>
+                <p>Reason: {data.reason}</p>
               </CardDescription>
             </CardContent>
           </Card>
