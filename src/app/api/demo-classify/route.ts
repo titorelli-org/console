@@ -7,6 +7,7 @@ import { memoize } from "@/lib/server/service-memoize";
 const getTitorelli = memoize(() =>
   createClient({
     serviceUrl: env.TITORELLI_SERVICE_URL,
+    casUrl: "--not-in-use--",
     clientId: "demo",
     clientSecret: env.TITORELLI_DEMO_CLIENT_SECRET,
     scope: ["predict"],
