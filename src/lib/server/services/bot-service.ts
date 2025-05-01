@@ -9,6 +9,7 @@ export class BotService {
   private prisma = prismaClient;
   private titorelli = createClient({
     serviceUrl: process.env.TITORELLI_SERVICE_URL!,
+    casUrl: "--not-in-use--",
     clientId: "console",
     clientSecret: process.env.TITORELLI_CLIENT_SECRET!,
     scope: [
