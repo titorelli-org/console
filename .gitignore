@@ -42,3 +42,5 @@ next-env.d.ts
 
 prisma/dev.db
 prisma/seed.ts
+
+data
