@@ -26,7 +26,7 @@ COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/package.jso
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/.next/ ./.next
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/public ./public
-COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/prisma/dev.db ./data/dev.db
+# COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/prisma/dev.db ./data/dev.db
 
 USER nextjs
 
