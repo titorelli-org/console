@@ -1,7 +1,7 @@
 FROM node:21.7 AS builder
 
 ENV NODE_ENV=production
-ENV DATABASE_URL="file:../data/dev.db"
+ENV DATABASE_URL="file:./dev.db"
 
 WORKDIR /usr/src/titorelli/console
 
@@ -14,9 +14,9 @@ RUN npm run build
 FROM node:21.7
 
 ENV NODE_ENV=production
-ENV DATABASE_URL="file:../data/dev.db"
+ENV DATABASE_URL="file:./dev.db"
 
-WORKDIR /urs/run/titorelli/console
+WORKDIR /usr/run/titorelli/console
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -26,6 +26,7 @@ COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/package.jso
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/.next/ ./.next
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/public ./public
+COPY --from=builder --chown=nextjs:nodejs /usr/src/titorelli/console/prisma/dev.db ./data/dev.db
 
 USER nextjs
 
