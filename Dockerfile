@@ -1,7 +1,7 @@
 FROM node:21.7 AS builder
 
 ENV NODE_ENV=production
-ENV DATABASE_URL="file:./dev.db"
+ENV DATABASE_URL="file:../data/dev.db"
 
 WORKDIR /usr/src/titorelli/console
 
@@ -14,7 +14,7 @@ RUN npm run build
 FROM node:21.7
 
 ENV NODE_ENV=production
-ENV DATABASE_URL="file:./dev.db"
+ENV DATABASE_URL="file:../data/dev.db"
 
 WORKDIR /urs/run/titorelli/console
 
