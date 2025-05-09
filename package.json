@@ -70,6 +70,7 @@
     "libphonenumber-js": "^1.11.17",
     "lodash": "^4.17.21",
     "lucide-react": "^0.469.0",
+    "motion": "^12.10.5",
     "next": "^15.3.1",
     "next-zod-route": "^0.1.4",
     "nodemailer": "^6.9.16",

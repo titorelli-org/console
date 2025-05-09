@@ -17,42 +17,52 @@ const options = {
   apiVersion: "v1",
 };
 
-const Client$: FC<{ user?: any }> = ({ user }) => {
+const Client$: FC<{ userId?: number; userUsername?: string }> = ({
+  userId,
+  userUsername,
+}) => {
   useEffect(() => {
-    openobserveRum.init({
-      applicationId: options.applicationId, // required, any string identifying your application
-      clientToken: options.clientToken,
-      site: options.site,
-      organizationIdentifier: options.organizationIdentifier,
-      service: options.service,
-      env: options.env,
-      version: options.version,
-      trackResources: true,
-      trackLongTasks: true,
-      trackUserInteractions: true,
-      apiVersion: options.apiVersion,
-      insecureHTTP: options.insecureHTTP,
-      defaultPrivacyLevel: "allow", // 'allow' or 'mask-user-input' or 'mask'. Use one of the 3 values.
-    });
+    if (openobserveRum.getInternalContext() == null) {
+      openobserveRum.init({
+        applicationId: options.applicationId, // required, any string identifying your application
+        clientToken: options.clientToken,
+        site: options.site,
+        organizationIdentifier: options.organizationIdentifier,
+        service: options.service,
+        env: options.env,
+        version: options.version,
+        trackResources: true,
+        trackLongTasks: true,
+        trackUserInteractions: true,
+        apiVersion: options.apiVersion,
+        insecureHTTP: options.insecureHTTP,
+        defaultPrivacyLevel: "allow", // 'allow' or 'mask-user-input' or 'mask'. Use one of the 3 values.
+      });
+    }
 
-    openobserveLogs.init({
-      clientToken: options.clientToken,
-      site: options.site,
-      organizationIdentifier: options.organizationIdentifier,
-      service: options.service,
-      env: options.env,
-      version: options.version,
-      forwardErrorsToLogs: true,
-      insecureHTTP: options.insecureHTTP,
-      apiVersion: options.apiVersion,
-    });
+    if (openobserveLogs.getInternalContext() == null) {
+      openobserveLogs.init({
+        clientToken: options.clientToken,
+        site: options.site,
+        organizationIdentifier: options.organizationIdentifier,
+        service: options.service,
+        env: options.env,
+        version: options.version,
+        forwardErrorsToLogs: true,
+        insecureHTTP: options.insecureHTTP,
+        apiVersion: options.apiVersion,
+      });
+    }
 
-    if (user) {
-      openobserveRum.setUser(user);
+    if (userId) {
+      openobserveRum.setUser({
+        id: String(userId),
+        username: userUsername,
+      });
     }
 
     openobserveRum.startSessionReplayRecording();
-  }, [user]);
+  }, [userId, userUsername]);
 
   return null;
 };

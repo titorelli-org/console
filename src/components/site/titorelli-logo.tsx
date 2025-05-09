@@ -23,7 +23,9 @@ import headerLogoPng from "./assets/header-logo.png";
 export function TitorelliLogo(props: Record<string, unknown>) {
   return (
     <Image
-      {...headerLogoPng}
+      src={headerLogoPng.src}
+      width={headerLogoPng.width}
+      height={headerLogoPng.height}
       alt="Titorelli logo"
       {...props}
       style={{ width: 120 }}

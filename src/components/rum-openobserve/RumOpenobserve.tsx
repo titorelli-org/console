@@ -7,7 +7,7 @@ export const RumOpenobserve = async () => {
 
   return (
     <Suspense fallback={null}>
-      <Client user={user} />
+      <Client userId={user?.id} userUsername={user?.username} />
     </Suspense>
   );
 };
