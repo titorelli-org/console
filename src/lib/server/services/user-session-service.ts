@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { prismaClient } from "@/lib/server/prisma-client";
 import { maskNumber } from "../keymask";
 import { env } from "@/lib/server/env";
+import { omit } from "lodash";
 
 export class UserSessionService {
   private prisma: PrismaClient = prismaClient;

@@ -18,6 +18,8 @@
     "@maskito/core": "^3.2.0",
     "@maskito/phone": "^3.2.0",
     "@maskito/react": "^3.2.0",
+    "@openobserve/browser-logs": "^0.2.11",
+    "@openobserve/browser-rum": "^0.2.11",
     "@parsekit/string-to-boolean": "^1.0.0",
     "@prisma/client": "^6.1.0",
     "@prisma/instrumentation": "^6.6.0",

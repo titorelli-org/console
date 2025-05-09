@@ -9,6 +9,7 @@ import { sessionTokenCookieName } from "@/constants";
 
 import "./globals.css";
 import { env } from "@/lib/server/env";
+import { RumOpenobserve } from "@/components/rum-openobserve";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
             <MetrikaScript />
           </Suspense>
         )}
+        <RumOpenobserve />
       </body>
     </html>
   );
