@@ -106,7 +106,7 @@ export class BotService {
           "generic/predict generic/train generic/exact_match/train generic/totems/train cas/predict cas/train",
       });
 
-      return true;
+      return id;
     });
   }
 

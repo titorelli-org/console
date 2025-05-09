@@ -14,6 +14,7 @@ export type BotCreateRequestDataVm = {
   name: string;
   description: string;
   bypassTelemetry: boolean;
+  startImmediately: boolean;
   modelCode: string;
   accessTokenId: string;
   tgBotToken: string;

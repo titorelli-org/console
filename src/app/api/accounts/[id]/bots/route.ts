@@ -1,3 +1,6 @@
+import { unauthorized } from "next/navigation";
+import { z } from "zod";
+import { createZodRoute } from "next-zod-route";
 import { unmaskNumber } from "@/lib/server/keymask";
 import {
   getBotService,
@@ -5,9 +8,6 @@ import {
   getSecurityService,
 } from "@/lib/server/services/instances";
 import { mapBotDtoToVm } from "@/types/bot";
-import { createZodRoute } from "next-zod-route";
-import { z } from "zod";
-import { unauthorized } from "next/navigation";
 import { getUserInRoute } from "@/lib/server/get-user-in-route";
 import { securityCheck } from "@/lib/server/security-check";
 import { OperationStatus } from "@/lib/server/OperationStatus";
@@ -50,6 +50,7 @@ export const POST = createZodRoute()
       name: z.string(),
       description: z.string(),
       bypassTelemetry: z.boolean(),
+      startImmediately: z.boolean(),
       modelCode: z.string(),
       accessTokenId: z.string(),
       tgBotToken: z.string(),
@@ -68,8 +69,8 @@ export const POST = createZodRoute()
 
     await securityCheck(securityService.userCanCreateBot, user.id, accountId);
 
-    return OperationStatus.call(async () =>
-      botService.create(accountId, {
+    try {
+      const id = await botService.create(accountId, {
         name: data.name,
         description: data.description,
         bypassTelemetry: data.bypassTelemetry,
@@ -79,6 +80,16 @@ export const POST = createZodRoute()
         ),
         accessTokenId: unmaskNumber(data.accessTokenId),
         tgBotToken: data.tgBotToken,
-      }),
-    );
+      });
+
+      try {
+        await botService.changeState(id, "starting");
+      } catch (e) {
+        return OperationStatus.fail(e);
+      }
+
+      return OperationStatus.ok();
+    } catch (e) {
+      return OperationStatus.fail(e);
+    }
   });

@@ -12,19 +12,20 @@ export const createSchema = z.object({
     .max(254, { message: "Слишком длинно" })
     .optional(),
   bypassTelemetry: z.boolean(),
+  startImmediately: z.boolean(),
   modelCode: z.string(),
   accessTokenId: z.string({ message: "Выберите токен" }),
   tgBotToken: z.string({ message: "Обязательное поле" }).refine(
     async (token) => {
+      if (!token || token === "") return false;
+
       try {
-        const resp = await fetch(
-          `https://api.telegram.org/bot${token}/getMe`,
-        );
+        const resp = await fetch(`https://api.telegram.org/bot${token}/getMe`);
         const { ok } = (await resp.json()) as { ok: boolean };
 
         return ok;
       } catch (_e) {
-        console.warn(_e)
+        console.warn(_e);
 
         return true;
       }

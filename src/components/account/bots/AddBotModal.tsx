@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useCallback, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -41,9 +41,11 @@ export type AddBotModalFormValues = Omit<
 
 export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
   const form = useForm<AddBotModalFormValues>({
+    mode: "onChange",
     defaultValues: {
       name: "",
       description: "",
+      startImmediately: true,
       bypassTelemetry: false,
       modelCode: genericModelCode,
       tgBotToken: "",
@@ -57,7 +59,7 @@ export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
 
   const [isAddTokenModalOpen, setIsAddTokenModalOpen] = useState(false);
 
-  const handleAddToken = async (name: string, description: string) => {
+  const addTokenHandler = async (name: string, description: string) => {
     const newToken = await addTokenAsyncMutation({ name, description });
 
     // Если апдейт пройдет позже таймаута, то значение не автовыберется в списке
@@ -68,6 +70,15 @@ export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
 
     setIsAddTokenModalOpen(false);
   };
+
+  const defaultAccessTokenHandler = useCallback(
+    (accessTokenId: string) => {
+      console.log("defaultAccessToken", accessTokenId);
+
+      form.setValue("accessTokenId", accessTokenId);
+    },
+    [form],
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -103,6 +114,13 @@ export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
               <StyledErrorMessage name="tgBotToken" />
             </div>
             <ModelSelector />
+            <Suspense fallback={<TokenSelectorSkeleton />}>
+              <TokenSelector
+                accountId={accountId}
+                onClickAdd={() => setIsAddTokenModalOpen(true)}
+                onDefaultAccessToken={defaultAccessTokenHandler}
+              />
+            </Suspense>
             <div className="flex items-center space-x-2">
               <FormField
                 control={form.control}
@@ -119,12 +137,24 @@ export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
               />
               <Label htmlFor="telemetry">Отключить телеметрию</Label>
             </div>
-            <Suspense fallback={<TokenSelectorSkeleton />}>
-              <TokenSelector
-                accountId={accountId}
-                onClickAdd={() => setIsAddTokenModalOpen(true)}
+            <div className="flex items-center space-x-2">
+              <FormField
+                control={form.control}
+                name="startImmediately"
+                render={({ field }) => (
+                  <Checkbox
+                    ref={field.ref}
+                    id="startImmediately"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    onBlur={field.onBlur}
+                  />
+                )}
               />
-            </Suspense>
+              <Label htmlFor="startImmediately">
+                Автостарт сразу после создания
+              </Label>
+            </div>
             <div className="flex justify-end space-x-2">
               <Button
                 type="button"
@@ -137,7 +167,9 @@ export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
               >
                 Cancel
               </Button>
-              <Button type="submit">Создать</Button>
+              <Button type="submit" disabled={!form.formState.isValid}>
+                Создать
+              </Button>
             </div>
           </form>
         </FormProvider>
@@ -145,7 +177,7 @@ export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
       <AddTokenModal
         isOpen={isAddTokenModalOpen}
         onClose={() => setIsAddTokenModalOpen(false)}
-        onAddToken={handleAddToken}
+        onAddToken={addTokenHandler}
       />
     </Dialog>
   );
