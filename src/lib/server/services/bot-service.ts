@@ -5,6 +5,7 @@ import { createClient } from "@titorelli/client";
 import { getAccessTokensService } from "./instances";
 import { mapAsync, mapFilterAsync } from "@/lib/utils";
 import { BotIcon } from "lucide-react";
+import { ManagedBot } from "@prisma/client";
 
 export class BotService {
   private prisma = prismaClient;
@@ -172,8 +173,10 @@ export class BotService {
     });
   }
 
-  public async restartWithNewToken(botId: number, token: string) {
-    return this.titorelli.bots.update(botId, { accessToken: token });
+  public async restartBotsWithNewToken(bots: ManagedBot[], token: string) {
+    return mapAsync(bots, async (bot) =>
+      this.titorelli.bots.update(bot.id, { accessToken: token }),
+    );
   }
 
   public async getBotState(botId: number) {

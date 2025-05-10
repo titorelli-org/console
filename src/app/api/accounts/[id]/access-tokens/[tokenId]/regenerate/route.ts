@@ -39,7 +39,9 @@ export const POST = createZodRoute()
       const { token, id } = await accessTokensService.regenerate(tokenId);
 
       try {
-        await botService.restartWithNewToken(id, token);
+        const bots = await botService.listAffectedBots(accountId, id);
+
+        await botService.restartBotsWithNewToken(bots, token);
       } catch (e) {
         return OperationStatus.fail(e);
       }
