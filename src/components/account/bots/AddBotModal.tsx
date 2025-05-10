@@ -73,8 +73,6 @@ export function AddBotModal({ isOpen, accountId, onClose }: AddBotModalProps) {
 
   const defaultAccessTokenHandler = useCallback(
     (accessTokenId: string) => {
-      console.log("defaultAccessToken", accessTokenId);
-
       form.setValue("accessTokenId", accessTokenId);
     },
     [form],

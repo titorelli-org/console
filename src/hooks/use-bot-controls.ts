@@ -3,6 +3,7 @@ import {
   BotCreateRequestDataVm,
   BotState,
   BotStateChangeResultVm,
+  BotUpdateRequestDataVm,
 } from "@/types/bot";
 import { useApiClient } from "./use-api-client";
 
@@ -14,6 +15,22 @@ export const useBotControls = (accountId: string) => {
     async mutationFn(params: BotCreateRequestDataVm) {
       const { data } = await apiClient.post<{ ok: boolean }>(
         `/api/accounts/${accountId}/bots`,
+        params,
+      );
+
+      return data;
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["accounts", accountId, "bots"],
+      });
+    },
+  });
+
+  const { mutate: updateMutation } = useMutation({
+    async mutationFn(params: BotUpdateRequestDataVm) {
+      const { data } = await apiClient.post<{ ok: boolean }>(
+        `/api/accounts/${accountId}/bots/${params.id}`,
         params,
       );
 
@@ -61,5 +78,6 @@ export const useBotControls = (accountId: string) => {
     createMutation,
     stateMutation,
     removeMutation,
+    updateMutation,
   };
 };

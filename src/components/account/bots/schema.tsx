@@ -33,3 +33,20 @@ export const createSchema = z.object({
     { message: "Невалидный токен бота в телеграмме" },
   ),
 });
+
+export const updateSchema = z.object({
+  id: z.string(),
+  name: z
+    .string()
+    .trim()
+    .min(1, { message: "Обязательное поле" })
+    .max(253, { message: "Слишком длинно" }),
+  description: z
+    .string()
+    .trim()
+    .max(254, { message: "Слишком длинно" })
+    .optional(),
+  bypassTelemetry: z.boolean(),
+  modelCode: z.string(),
+  accessTokenId: z.string({ message: "Выберите токен" }),
+});

@@ -1,4 +1,4 @@
-import { maskNumber } from "@/lib/server/keymask";
+import { maskNumber, unmaskNumber } from "@/lib/server/keymask";
 import { ManagedBot } from "@prisma/client";
 
 export type BotState =
@@ -20,6 +20,15 @@ export type BotCreateRequestDataVm = {
   tgBotToken: string;
 };
 
+export type BotUpdateRequestDataVm = {
+  id: string;
+  name?: string;
+  description?: string;
+  bypassTelemetry?: boolean;
+  modelCode?: string;
+  accessTokenId?: string;
+};
+
 export interface BotVm {
   id: string;
   name: string;
@@ -28,6 +37,7 @@ export interface BotVm {
   bypassTelemetry: boolean;
   accessTokenId: string;
   modelId: string;
+  accountId: string;
   createdAt: string;
 }
 
@@ -48,6 +58,7 @@ export const mapBotDtoToVm = ({
   bypassTelemetry,
   accessTokenId,
   modelId,
+  accountId,
   createdAt,
 }: ManagedBot & { state: BotState }): BotVm => ({
   id: maskNumber(id),
@@ -57,5 +68,22 @@ export const mapBotDtoToVm = ({
   bypassTelemetry,
   accessTokenId: maskNumber(accessTokenId),
   modelId: maskNumber(modelId),
+  accountId: maskNumber(accountId),
   createdAt: createdAt.toISOString(),
+});
+
+export const mapUpdateRequestToDto = ({
+  id,
+  name,
+  description,
+  bypassTelemetry,
+  modelCode,
+  accessTokenId,
+}: BotUpdateRequestDataVm) => ({
+  id: unmaskNumber(id),
+  name,
+  description,
+  bypassTelemetry,
+  modelCode,
+  accessTokenId: unmaskNumber(accessTokenId),
 });

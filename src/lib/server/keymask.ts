@@ -6,7 +6,7 @@ const seedU8A = new TextEncoder().encode(
 
 const keymaskNumber = new Keymask({
   seed: seedU8A.buffer as ArrayBuffer,
-  type: 'number'
+  type: "number",
 });
 
 export const maskNumber = (value: number) => {
@@ -14,9 +14,10 @@ export const maskNumber = (value: number) => {
 };
 
 export function unmaskNumber(value: string): number;
-export function unmaskNumber(value: undefined | null): null;
+export function unmaskNumber(value: string | undefined): number | undefined;
+export function unmaskNumber(value: string | null): number | null;
 export function unmaskNumber(value: string | undefined | null) {
-  if (value == null) return null;
+  if (value == null) return value;
 
   return keymaskNumber.unmask(value);
 }

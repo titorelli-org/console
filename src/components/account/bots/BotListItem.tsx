@@ -57,8 +57,8 @@ export default function BotListItem({ bot, accountId }: BotListItemProps) {
       </tr>
       <EditBotModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
         bot={bot}
+        onClose={() => setIsEditModalOpen(false)}
       />
     </>
   );

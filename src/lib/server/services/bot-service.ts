@@ -4,7 +4,6 @@ import { BotState } from "@/types/bot";
 import { createClient } from "@titorelli/client";
 import { getAccessTokensService } from "./instances";
 import { mapAsync, mapFilterAsync } from "@/lib/utils";
-import { BotIcon } from "lucide-react";
 import { ManagedBot } from "@prisma/client";
 
 export class BotService {
@@ -109,6 +108,40 @@ export class BotService {
       });
 
       return id;
+    });
+  }
+
+  public async update({
+    id,
+    modelCode: _modelCode, // omiting this param because it's not supported now
+    ...restParams
+  }: {
+    id: number;
+    name?: string;
+    description?: string;
+    bypassTelemetry?: boolean;
+    modelCode?: string;
+    accessTokenId?: number;
+  }) {
+    await this.prisma.$transaction(async (t) => {
+      await t.managedBot.update({
+        where: { id },
+        data: Object.fromEntries(
+          Object.entries(restParams).filter(([_, v]) => v != undefined),
+        ),
+      });
+
+      if (restParams.accessTokenId != null) {
+        const newAccesstoken = await this.accessTokensService.privateGetToken(
+          restParams.accessTokenId,
+        );
+
+        if (!newAccesstoken) throw new Error("New accessToken not exists");
+
+        await this.titorelli.bots.update(id, {
+          accessToken: newAccesstoken,
+        });
+      }
     });
   }
 

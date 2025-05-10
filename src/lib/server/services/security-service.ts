@@ -56,6 +56,10 @@ export class SecurityService {
   public async userCanRemoveBot(userId: number, accountId: number) {
     return this.userHasAccessToAccountBots(userId, accountId);
   }
+
+  public async userCanUpdateBot(userId: number, accountId: number) {
+    return this.userHasAccessToAccountBots(userId, accountId);
+  }
   // #endregion
 
   // #region account models

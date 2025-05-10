@@ -24,7 +24,7 @@ export const TokenSelector = memo(
   }: {
     accountId: string;
     onClickAdd(): void;
-    onDefaultAccessToken(accessTokenId: string): void;
+    onDefaultAccessToken?(accessTokenId: string): void;
   }) => {
     const form = useFormContext<AddBotModalFormValues>();
     const { data: tokens, isLoading: isTokensLoading } =
@@ -44,11 +44,11 @@ export const TokenSelector = memo(
     }, [noTokens]);
 
     useEffect(() => {
-      console.log("TokenSelector01", 46);
-
-      if (isTokensLoading == false && tokens.length === 1) {
-        console.log("TokenSelector02", tokens);
-
+      if (
+        onDefaultAccessToken &&
+        isTokensLoading == false &&
+        tokens.length === 1
+      ) {
         const firstToken = first(tokens);
 
         if (firstToken) {
@@ -67,29 +67,25 @@ export const TokenSelector = memo(
             <FormField
               control={form.control}
               name="accessTokenId"
-              render={({ field }) => {
-                console.log("FormField render", field.value, "ffff");
-
-                return (
-                  <Select
-                    name={field.name}
-                    value={field.value ?? undefined}
-                    // defaultValue={field.value ?? undefined}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger className="flex-grow">
-                      <SelectValue placeholder="Выбрать токен доступа" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {tokens.map(({ id, name }) => (
-                        <SelectItem key={id} value={id}>
-                          {name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                );
-              }}
+              render={({ field }) => (
+                <Select
+                  name={field.name}
+                  value={field.value ?? undefined}
+                  // defaultValue={field.value ?? undefined}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="flex-grow">
+                    <SelectValue placeholder="Выбрать токен доступа" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tokens.map(({ id, name }) => (
+                      <SelectItem key={id} value={id}>
+                        {name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
           )}
 
