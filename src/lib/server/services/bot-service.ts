@@ -3,7 +3,8 @@ import { prismaClient } from "../prisma-client";
 import { BotState } from "@/types/bot";
 import { createClient } from "@titorelli/client";
 import { getAccessTokensService } from "./instances";
-import { mapAsync } from "@/lib/utils";
+import { mapAsync, mapFilterAsync } from "@/lib/utils";
+import { BotIcon } from "lucide-react";
 
 export class BotService {
   private prisma = prismaClient;
@@ -129,12 +130,50 @@ export class BotService {
     }
   }
 
+  public async listAffectedBots(
+    paramsAccountId: number,
+    accessTokenId: number,
+  ) {
+    const accessToken =
+      await this.accessTokensService.privateGetToken(accessTokenId);
+
+    if (!accessToken) {
+      return [];
+    }
+
+    const externalBots = (await this.titorelli.bots.list(paramsAccountId, {
+      accessToken,
+    })) as Awaited<{ id: number; accountId: number }[]>;
+
+    return mapFilterAsync(externalBots, async ({ id, accountId }) => {
+      if (accountId != paramsAccountId) {
+        return null;
+      }
+
+      const bot = await this.prisma.managedBot.findFirst({
+        where: { id, accountId },
+      });
+
+      if (!bot) {
+        return null;
+      }
+
+      return Object.assign(bot, {
+        state: await this.getBotState(bot.id),
+      });
+    });
+  }
+
   public async remove(botId: number) {
     return await this.prisma.$transaction(async (t) => {
       await this.titorelli.bots.remove(botId);
 
       await t.managedBot.delete({ where: { id: botId } });
     });
+  }
+
+  public async restartWithNewToken(botId: number, token: string) {
+    return this.titorelli.bots.update(botId, { accessToken: token });
   }
 
   public async getBotState(botId: number) {

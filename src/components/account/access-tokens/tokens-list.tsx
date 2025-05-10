@@ -24,11 +24,11 @@ export function TokenList({
     <div className="overflow-x-auto">
       <div className="min-w-full">
         <div className="grid grid-cols-12 gap-4 py-3 px-4 text-sm font-medium text-gray-500 border-b">
-          <div className="col-span-2">Name</div>
-          <div className="col-span-3">Description</div>
-          <div className="col-span-2">Created At</div>
-          <div className="col-span-2">Last Used</div>
-          <div className="col-span-3">Actions</div>
+          <div className="col-span-2">Название</div>
+          <div className="col-span-3">Описание</div>
+          <div className="col-span-2">Создан</div>
+          <div className="col-span-2">Последнее использование</div>
+          <div className="col-span-3"></div>
         </div>
         <div className="divide-y">
           {tokens.map((token) => (

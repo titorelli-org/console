@@ -83,6 +83,8 @@ export function TokenItem({
       </div>
       <RegenerateTokenModal
         isOpen={isRegenerateModalOpen}
+        accountId={token.accountId}
+        accessTokenId={token.id}
         onClose={() => setIsRegenerateModalOpen(false)}
         onRegenerateToken={handleRegenerateToken}
       />

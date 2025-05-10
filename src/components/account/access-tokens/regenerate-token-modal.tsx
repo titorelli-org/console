@@ -7,15 +7,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AffectedBotsList } from "./affected-bots-list";
+import { useGetAffectedBots } from "@/hooks/use-get-affected-bots";
 
 interface RegenerateTokenModalProps {
   isOpen: boolean;
+  accountId: string;
+  accessTokenId: string;
   onClose: () => void;
   onRegenerateToken: () => void;
 }
 
 export function RegenerateTokenModal({
   isOpen,
+  accountId,
+  accessTokenId,
   onClose,
   onRegenerateToken,
 }: RegenerateTokenModalProps) {
@@ -23,18 +29,29 @@ export function RegenerateTokenModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Regenerate Token</DialogTitle>
+          <DialogTitle>Перевыпустить токен</DialogTitle>
           <DialogDescription>
-            Are you sure you want to regenerate this token? The old token will
-            be invalidated, but all related statistics will be preserved. You
-            will be shown the new token after regeneration.
+            Вы уверены, что хотите перевыпустить этот токен?
+            <br />
+            Старый токен станет недействителен.
+            <br />
+            Вы увидите новый токен после перевыпуска.
+            <br />
+            Боты, которые будут затронуты этим действием будут перезапущены.
+            <br />
+            Если вы используете токен для других целей, обновить его придется
+            вручную.
           </DialogDescription>
+          <AffectedBotsList
+            accountId={accountId}
+            accessTokenId={accessTokenId}
+          />
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            Отмена
           </Button>
-          <Button onClick={onRegenerateToken}>Regenerate</Button>
+          <Button onClick={onRegenerateToken}>Перевыпустить</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

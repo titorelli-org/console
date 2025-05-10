@@ -22,17 +22,18 @@ export function TokenDisplayModal({ token, onClose }: TokenDisplayModalProps) {
     <Dialog open={!!token} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New Token Created</DialogTitle>
+          <DialogTitle>Токен создан</DialogTitle>
           <DialogDescription>
-            Please copy this token and store it safely. You won't be able to see
-            it again:
+            Пожалуйста, скопируйте токен и сохраните его в надежном месте.
+            <br />
+            Больше увидеть токен не получится.
           </DialogDescription>
         </DialogHeader>
         <pre className="bg-gray-100 p-2 rounded mb-4 overflow-x-auto">
           {token}
         </pre>
         <DialogFooter>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onClose}>Закрыть</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
