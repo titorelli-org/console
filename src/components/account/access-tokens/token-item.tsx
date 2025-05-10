@@ -62,7 +62,7 @@ export function TokenItem({
           onClick={() => setIsRegenerateModalOpen(true)}
           className="w-full sm:w-auto"
         >
-          Regenerate
+          Перевыпустить
         </Button>
         <Button
           variant="destructive"
@@ -70,15 +70,7 @@ export function TokenItem({
           onClick={() => setIsRevokeModalOpen(true)}
           className="w-full sm:w-auto"
         >
-          Revoke
-        </Button>
-        <Button
-          variant="link"
-          size="sm"
-          onClick={() => console.log(`Navigate to stats for ${token.id}`)}
-          className="w-full sm:w-auto"
-        >
-          View Stats
+          Удалить
         </Button>
       </div>
       <RegenerateTokenModal
@@ -90,6 +82,8 @@ export function TokenItem({
       />
       <RevokeTokenModal
         isOpen={isRevokeModalOpen}
+        accountId={token.accountId}
+        accessTokenId={token.id}
         onClose={() => setIsRevokeModalOpen(false)}
         onRevokeToken={() => onRevokeToken(token.id)}
       />

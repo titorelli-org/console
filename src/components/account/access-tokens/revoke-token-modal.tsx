@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,40 +6,56 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
+import { AffectedBotsList } from "./affected-bots-list";
 
 interface RevokeTokenModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onRevokeToken: () => void
+  isOpen: boolean;
+  accountId: string;
+  accessTokenId: string;
+  onClose: () => void;
+  onRevokeToken: () => void;
 }
 
-export function RevokeTokenModal({ isOpen, onClose, onRevokeToken }: RevokeTokenModalProps) {
+export function RevokeTokenModal({
+  isOpen,
+  accountId,
+  accessTokenId,
+  onClose,
+  onRevokeToken,
+}: RevokeTokenModalProps) {
   const handleRevokeToken = () => {
-    onRevokeToken()
-    onClose()
-  }
+    onRevokeToken();
+    onClose();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Revoke Token</DialogTitle>
+          <DialogTitle>Удалить токен</DialogTitle>
           <DialogDescription>
-            Are you sure you want to revoke this token? This action cannot be undone, and all related data will be
-            permanently removed.
+            Вы уверены, что хотите удалить токен?
+            <br />
+            Это действие нельзя будет отменить.
+            <br />
+            Затронутые этим действием боты будут остановлены и не смогут быть
+            перезапущены, если не будет выбран новый токен.
           </DialogDescription>
+          <AffectedBotsList
+            accountId={accountId}
+            accessTokenId={accessTokenId}
+          />
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            Отмена
           </Button>
           <Button variant="destructive" onClick={handleRevokeToken}>
-            Revoke
+            Удалить
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
