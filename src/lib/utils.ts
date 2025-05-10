@@ -85,3 +85,13 @@ export function groupNotifications(
     notifications,
   }));
 }
+
+export function extractAccountIdFromPathname(pathname: string) {
+  const match = pathname.match(/^\/accounts\/(\w+)\/?/);
+
+  if (!match || !match[1]) {
+    return null;
+  }
+
+  return match[1];
+}
