@@ -18,11 +18,13 @@ client.interceptors.response.use((value) => {
 export const useApiClient = () => {
   const session = useSession();
 
-  if (session) {
-    client.defaults.headers.common["Cookie"] =
-      `${sessionTokenCookieName}=${session}`;
-  } else {
-    delete client.defaults.headers.common["Cookie"];
+  if (typeof window === "undefined") {
+    if (session) {
+      client.defaults.headers.common["Cookie"] =
+        `${sessionTokenCookieName}=${session}`;
+    } else {
+      delete client.defaults.headers.common["Cookie"];
+    }
   }
 
   return client;

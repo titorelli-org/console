@@ -34,8 +34,7 @@ model User {
 // #region UserContact
 model UserContact {
   id              Int               @id @default(autoincrement())
-  // 'email' | 'phone' | 'tg-username' | 'tg-user-id'
-  type                  String
+  type                  String      // 'email' | 'phone' | 'tg-username' | 'tg-user-id'
   primary               Boolean     @default(false)
   email                 String?
   emailConfirmed        Boolean?
@@ -43,8 +42,7 @@ model UserContact {
   emailCorporate        Boolean?
   phone                 String?
   phoneInvalid          Boolean?
-  // 'out-of-service' | 'cant-reach' | 'wrong-person' | 'other:${reason}'
-  phoneInvalidReason    String?
+  phoneInvalidReason    String?     // 'out-of-service' | 'cant-reach' | 'wrong-person' | 'other:${reason}'
   tgUsername            String?
   tgUserId              String?
   user                  User        @relation(fields: [userId], references: [id])

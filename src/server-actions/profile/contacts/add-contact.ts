@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { ContactType } from "@/components/my-profile/contacts-list";
@@ -8,74 +8,77 @@ import { UserService } from "@/lib/server/services/user-service";
 import { addContactFormInitialState } from "@/constants";
 import { getEmailValidationService } from "@/lib/server/services/instances";
 
-export const addContact = async (prevState: AddConcactFormState, form: FormData) => {
-  const userService = new UserService()
-  const emailValidationService = getEmailValidationService()
-  const session = await getSession()
-  const type = form.get('type')?.toString().trim() as ContactType | undefined
-  const value = form.get('value')?.toString().trim()
+export const addContact = async (
+  prevState: AddConcactFormState,
+  form: FormData,
+) => {
+  const userService = new UserService();
+  const emailValidationService = getEmailValidationService();
+  const session = await getSession();
+  const type = form.get("type")?.toString().trim() as ContactType | undefined;
+  const value = form.get("value")?.toString().trim();
 
   const nextState: AddConcactFormState = {
     success: null,
     defaultValues: addContactFormInitialState.defaultValues,
-    errors: {}
-  }
+    errors: {},
+  };
 
   if (!session) {
-    return nextState
+    return nextState;
   }
 
   if (!type) {
-    nextState.errors.type = 'Не указан тип контакта'
+    nextState.errors.type = "Не указан тип контакта";
 
-    return nextState
+    return nextState;
   }
 
   if (!value) {
-    nextState.errors.value = 'Контакт не указан'
+    nextState.errors.value = "Контакт не указан";
 
-    return nextState
+    return nextState;
   }
 
-  if (!['email', 'phone', 'telegram'].includes(type)) {
-    nextState.errors.type = 'Тип контакта указан не верно'
+  if (!["email", "phone", "telegram"].includes(type)) {
+    nextState.errors.type = "Тип контакта указан не верно";
 
-    return nextState
+    return nextState;
   }
 
-  if (type === 'email') {
+  if (type === "email") {
     if (!emailValidationService.validateEmail(value)) {
-      nextState.errors.value = 'Невалидный емейл'
+      nextState.errors.value = "Невалидный емейл";
 
-      return nextState
+      return nextState;
     }
 
-    await userService.addEmailContact(session?.userId, value)
+    await userService.addEmailContact(session?.userId, value);
 
-    nextState.success = true
+    nextState.success = true;
 
-    return nextState
+    return nextState;
   }
 
-  if (type === 'phone') {
-    if (!isValidPhoneNumber(value, 'RU')) {
-      nextState.errors.value = 'Невалидный номер телефона'
+  if (type === "phone") {
+    if (!isValidPhoneNumber(value, "RU")) {
+      nextState.errors.value = "Невалидный номер телефона";
 
-      return nextState
+      return nextState;
     }
 
-    await userService.addPhoneContact(session?.userId, value)
+    await userService.addPhoneContact(session?.userId, value);
 
-    nextState.success = true
+    nextState.success = true;
 
-    return nextState
+    return nextState;
   }
 
-  if (type === 'telegram') {
-    await userService.addTelegramContact(session.userId, value)
+  if (type === "telegram") {
+    await userService.addTelegramContact(session.userId, value);
 
-    return nextState
+    return nextState;
   }
 
-  return nextState
-}
+  return nextState;
+};

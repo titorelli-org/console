@@ -11,22 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getUserInPage } from "@/lib/server/get-user-in-page";
+import { maskNumber } from "@/lib/server/keymask";
 
-export default function UserProfile() {
-  // This data would typically come from your backend
-  const initialData = {
-    avatar: "/placeholder.svg?height=128&width=128",
-    username: "johndoe",
-    contacts: [
-      { id: "1", type: "email", value: "john@example.com", confirmed: true },
-      { id: "2", type: "phone", value: "+1234567890", confirmed: false },
-      { id: "3", type: "telegram", value: "@johndoe", confirmed: true },
-    ],
-    accounts: [
-      { id: "1", name: "Project A", ownerUsername: "alice", role: "member" },
-      { id: "2", name: "Project B", ownerUsername: "bob", role: "viewer" },
-    ],
-  };
+export default async function UserProfile() {
+  const user = (await getUserInPage())!;
+  const maskedUserId = maskNumber(user.id);
 
   return (
     <Layout>
@@ -36,12 +26,11 @@ export default function UserProfile() {
           {/* <UserAvatar initialAvatar={initialData.avatar} /> */}
           {/* <EditableUsername initialUsername={initialData.username} /> */}
           <AccountsList />
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          <ContactsList initialContacts={initialData.contacts as any} />
+          <ContactsList userId={maskedUserId} />
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="destructive" className="font-bold">
-                Remove Account
+                Удалить аккаунт
               </Button>
             </DialogTrigger>
             <DialogContent>

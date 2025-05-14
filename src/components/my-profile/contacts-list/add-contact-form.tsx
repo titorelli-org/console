@@ -29,14 +29,12 @@ export type AddConcactFormState = {
 };
 
 export const AddContactForm: FC = () => {
-  const [{ defaultValues, errors }, formAction] =
-    useActionState<AddConcactFormState>(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      addContact as any,
-      addContactFormInitialState,
-    );
+  const [{ errors }, formAction] = useActionState<AddConcactFormState>(
+    addContact as any,
+    addContactFormInitialState,
+  );
   const [newContactType, setNewContactType] = useState<ContactType>("email");
-  // const [newContactValue, setNewContactValue] = useState("");
+  const [newContactValue, setNewContactValue] = useState("");
 
   const renderInput = () => {
     switch (newContactType) {
@@ -45,28 +43,28 @@ export const AddContactForm: FC = () => {
           <Input
             type="email"
             name="value"
-            defaultValue={defaultValues.value}
-            // onChange={(e) => setNewContactValue(e.target.value)}
+            value={newContactValue}
+            onChange={(e) => setNewContactValue(e.target.value)}
             placeholder="Введите email для связи"
           />
         );
       case "phone":
         return (
           <PhoneInput
-            defaultValue={defaultValues.value}
+            value={newContactValue}
             name="value"
             placeholder="Введите номер телефона для связи"
-            // onChange={(e) => {
-            //   setNewContactValue((e.target as HTMLInputElement).value);
-            // }}
+            onChange={(e) => {
+              setNewContactValue((e.target as HTMLInputElement).value);
+            }}
           />
         );
       case "telegram":
         return (
           <Input
-            value={defaultValues.value}
+            value={newContactValue}
             name="value"
-            // onChange={(e) => setNewContactValue(e.target.value)}
+            onChange={(e) => setNewContactValue(e.target.value)}
             placeholder="Введите telegram username для связи"
           />
         );
@@ -79,6 +77,9 @@ export const AddContactForm: FC = () => {
     <form
       action={formAction}
       className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
+      onSubmit={() => {
+        setNewContactValue("");
+      }}
     >
       <div>
         <Select
@@ -106,12 +107,7 @@ export const AddContactForm: FC = () => {
       <Button
         type="submit"
         variant="outline"
-        // disabled={newContactValue.trim() === ""}
-        // onClick={() => {
-        //   onAdd(newContactType, newContactValue);
-
-        //   setNewContactValue("");
-        // }}
+        disabled={newContactValue.trim() === ""}
       >
         Добавить контакт
       </Button>

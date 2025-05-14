@@ -3,6 +3,16 @@ import { prismaClient } from "../prisma-client";
 export class SecurityService {
   private prisma = prismaClient;
 
+  // #region users
+  public async userHasAccessToContacts(_userId: number) {
+    return true;
+  }
+
+  public async userCanDeleteContact(userId: number, _contactId: number) {
+    return this.userHasAccessToContacts(userId);
+  }
+  // #endregion
+
   // #region account
   public async userHasAccessToAccount(userId: number, accountId: number) {
     const count = await this.prisma.accountMember.count({
