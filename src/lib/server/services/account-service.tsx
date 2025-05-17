@@ -113,7 +113,7 @@ export class AccountService {
 
         const inviteInputs = await mapFilterAsync(
           members,
-          async ({ identity, role }) => {
+          async ({ identity, role: _role /** always "member" */ }) => {
             const identityType = this.userService.getIdentityType(identity);
 
             if (!identityType) return null;
@@ -123,7 +123,7 @@ export class AccountService {
             if (user?.id === ownerUserId) return null;
 
             return {
-              role,
+              role: "member",
               userId: user?.id ?? undefined,
               identityType,
               email: identityType === "email" ? identity : undefined,
@@ -155,7 +155,7 @@ export class AccountService {
 
     await this.modelsService.initGenericModel(account.id);
 
-    await await this.inviteService.sendInvites(createdInvites);
+    await this.inviteService.sendInvites(createdInvites);
   }
 
   /**
@@ -169,10 +169,9 @@ export class AccountService {
       },
     });
 
-    if (membership?.role == null)
-      return null
+    if (membership?.role == null) return null;
 
-    return membership.role as ProfileAccountRoles
+    return membership.role as ProfileAccountRoles;
   }
 
   /**
@@ -248,6 +247,24 @@ export class AccountService {
    */
   async deleteAccount(accountId: number) {
     await this.prisma.$transaction(async (t) => {
+      await t.accessToken.deleteMany({
+        where: {
+          accountId,
+        },
+      });
+
+      await t.classificationModel.deleteMany({
+        where: {
+          accountId,
+        },
+      });
+
+      await t.managedBot.deleteMany({
+        where: {
+          accountId,
+        },
+      });
+
       await t.accountMember.deleteMany({
         where: {
           accountId,
@@ -293,6 +310,14 @@ export class AccountService {
 
       return true;
     });
+  }
+
+  async leaveAccount(accountId: number, userId: number) {
+    await this.prisma.accountMember.deleteMany({
+      where: { accountId, userId },
+    });
+
+    return true;
   }
 
   private generateAccountName() {

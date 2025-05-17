@@ -1,6 +1,5 @@
 import { createHash, randomBytes } from "crypto";
 import { prismaClient } from "@/lib/server/prisma-client";
-import { PrismaClient } from "@prisma/client";
 import { unmaskNumber } from "@/lib/server/keymask";
 import { env } from "@/lib/server/env";
 import { formatPhoneNumber } from "../format-phone-number";
@@ -13,8 +12,8 @@ import {
 export type IdentityTypes = "email" | "phone" | "username";
 
 export class UserService {
-  private passwordPepper: string;
-  private prisma: PrismaClient;
+  private passwordPepper = env.PASSWORD_PEPPER;
+  private prisma = prismaClient;
 
   get emailValidationService() {
     return getEmailValidationService();
@@ -28,11 +27,6 @@ export class UserService {
     return getTokenService();
   }
 
-  constructor() {
-    this.prisma = prismaClient;
-    this.passwordPepper = env.PASSWORD_PEPPER;
-  }
-
   async getUser(userId: number) {
     return this.prisma.user.findUnique({
       where: { id: userId },
@@ -40,42 +34,11 @@ export class UserService {
   }
 
   async markEmailConfirmedByToken(token: string) {
-    const { contactId: maskedContactId } =
-      await this.tokenService.parseEmailVerificationToken(token);
-    const contactId = unmaskNumber(maskedContactId);
+    const contactId = await this.getContactIdFromToken(token);
 
     await this.prisma.userContact.update({
       where: { id: contactId },
       data: { emailConfirmed: true },
-    });
-  }
-
-  /**
-   * @deprecated Used only in seed
-   */
-  async createUserWithEmail(
-    username: string,
-    rawPassword: string,
-    email: string,
-  ) {
-    const passwordSalt = this.generateSalt();
-
-    await this.prisma.$transaction(async (t) => {
-      const user = await t.user.create({
-        data: {
-          username,
-          passwordHash: this.hashPassword(rawPassword, passwordSalt),
-          passwordSalt,
-        },
-      });
-
-      await t.userContact.create({
-        data: {
-          userId: user.id,
-          type: "email",
-          email,
-        },
-      });
     });
   }
 
@@ -170,10 +133,10 @@ export class UserService {
     const user = await this.getUserByIdentnty(identity);
 
     if (user) {
-      return [true, user.id];
+      return [true, user.id] as const;
     }
 
-    return [false, null];
+    return [false, null] as const;
   }
 
   async tryReset(token: string, rawPassword: string) {
@@ -394,5 +357,12 @@ export class UserService {
 
   private generateSalt() {
     return randomBytes(24).toString("hex");
+  }
+
+  private async getContactIdFromToken(token: string) {
+    const { contactId: maskedContactId } =
+      await this.tokenService.parseEmailVerificationToken(token);
+
+    return unmaskNumber(maskedContactId);
   }
 }

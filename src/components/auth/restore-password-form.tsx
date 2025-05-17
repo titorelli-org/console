@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { FieldError } from "@/components/form/field-error";
 import Link from "next/link";
 import { restoreFormInitialState } from "@/constants";
+import { isEmpty } from "lodash";
 
 export type RestoreFormProps = React.ComponentPropsWithoutRef<"form">;
 
@@ -28,12 +29,11 @@ export function RestorePasswordForm({
   ...props
 }: RestoreFormProps) {
   const [{ success, defaultValues, errors }, formAction] =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useActionState<RestoreFormState>(action as any, restoreFormInitialState);
 
-  if (success) {
+  if (success === true) {
     return (
-      <div className={cn("flex flex-col gap-6")}>
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
           <h1 className="text-3xl font-bold">
             Ссылка на сброс пароля отправлена
@@ -48,6 +48,24 @@ export function RestorePasswordForm({
           </p>
           <p className="text-balance text-sm text-muted-foreground">
             Если письмо не пришло, проверьте папку &quot;спам&quot;
+          </p>
+        </div>
+      </div>
+    );
+  } else if (success === false && isEmpty(errors)) {
+    return (
+      <div className={"flex flex-col gap-6"}>
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-3xl font-bold">
+            Ссылка на сброс пароля не была отправлена
+          </h1>
+          <p className="text-balance text-sm text-muted-foreground">
+            Если для восстановления доступа вы указывали никнейм или номер
+            телефона, значит, у вас нет подтвержденного емейла
+          </p>
+          <p className="text-balance text-sm text-muted-foreground">
+            Попробуйте указать емейл, на который следует выслать ссылку на
+            восттановление пароля
           </p>
         </div>
       </div>
@@ -82,14 +100,11 @@ export function RestorePasswordForm({
         <Button type="submit" className="w-full">
           Восстановить пароль
         </Button>
-        <FieldError errors={{}} field="_global" />
+        <FieldError errors={errors} field="_global" />
       </div>
       <div className="text-center text-sm">
         Нет профиля?{" "}
-        <Link
-          href="/auth/signup"
-          className="underline underline-offset-4"
-        >
+        <Link href="/auth/signup" className="underline underline-offset-4">
           Зарегистрироваться
         </Link>
       </div>

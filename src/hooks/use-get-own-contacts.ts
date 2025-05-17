@@ -8,8 +8,6 @@ export const useGetOwnContacts = (userId: string) => {
   return useQuery({
     queryKey: ["users", userId, "contacts"],
     async queryFn() {
-      console.log("queryFn!!!");
-
       const { data } = await apiClient.get<UserContactVm[]>(
         `/api/users/${userId}/contacts`,
       );

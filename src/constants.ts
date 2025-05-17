@@ -6,7 +6,6 @@ import { type ResetFormState } from '@/components/auth/reset-password-form'
 import { type LeaveFormState } from '@/components/my-profile/accounts-list/account-item/leave-button'
 
 export const sessionTokenCookieName = 'SID'
-export const activeAccountCookueName = 'AA'
 
 export const genericModelCode = 'generic'
 

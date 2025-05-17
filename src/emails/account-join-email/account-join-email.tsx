@@ -58,7 +58,6 @@ export default function AccountJoinInvite({
               {projectName}&quot; на платформе Titorelli.
             </Text>
             <Text className="text-zinc-300 text-base mb-4">
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               Ваша роль:{" "}
               {new UserAccountRoleHelper(invitedRole as any).displayName}
             </Text>

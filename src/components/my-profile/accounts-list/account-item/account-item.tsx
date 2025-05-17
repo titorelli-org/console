@@ -2,6 +2,7 @@ import { type FC } from "react";
 import { ProfileAccountRoles } from "@/types/my-profile";
 import { LeaveButton } from "./leave-button";
 import Link from "next/link";
+import { UserAccountRoleHelper } from "@/lib";
 
 export const AccountItem: FC<{
   id: string;
@@ -14,7 +15,9 @@ export const AccountItem: FC<{
     <div className="grid grid-cols-3 gap-4 flex-grow">
       <div>
         <p className="text-sm font-medium text-muted-foreground">Название</p>
-        <Link href={`/accounts/${id}`} className="font-medium underline">{name}</Link>
+        <Link href={`/accounts/${id}`} className="font-medium underline">
+          {name}
+        </Link>
       </div>
       <div>
         <p className="text-sm font-medium text-muted-foreground">Владелец</p>
@@ -22,7 +25,9 @@ export const AccountItem: FC<{
       </div>
       <div>
         <p className="text-sm font-medium text-muted-foreground">Ваша роль</p>
-        <p className="capitalize">{role}</p>
+        <p className="capitalize">
+          {new UserAccountRoleHelper(role).displayName}
+        </p>
       </div>
     </div>
     <div className="flex space-x-2 ml-4">

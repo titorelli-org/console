@@ -41,7 +41,7 @@ import { UserAccountRoleHelper } from "@/lib/helpers/user-account-role-helper";
 
 const memberSchema = z.object({
   identity: z.string().min(1, "Идентификатор участника обязателен"),
-  role: z.enum(["viewer", "member"]),
+  role: z.enum(["member"]),
 });
 
 const formSchema = z.object({
@@ -135,7 +135,7 @@ export function AddAccountBtn({
                       placeholder="Емейл, ник или номер телефона участника"
                       className="flex-grow"
                     />
-                    <Select
+                    {/* <Select
                       {...form.register(`members.${index}.role`)}
                       onValueChange={(value) =>
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -152,7 +152,7 @@ export function AddAccountBtn({
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
-                    </Select>
+                    </Select> */}
                     <Button
                       type="button"
                       variant="ghost"
@@ -173,7 +173,9 @@ export function AddAccountBtn({
                 variant="secondary"
                 onClick={() => {
                   const members = form.getValues("members");
-                  members.push({ identity: "", role: "viewer" });
+
+                  members.push({ identity: "", role: "member" });
+
                   form.setValue("members", members);
                 }}
                 className="mt-2"

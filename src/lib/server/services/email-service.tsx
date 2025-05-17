@@ -104,6 +104,8 @@ export class EmailService {
       }
     }
 
+    let result = false;
+
     for (const contact of emailContacts) {
       if (!contact) continue;
       if (contact.email == null) continue;
@@ -120,7 +122,11 @@ export class EmailService {
         "Восстановление пароля на платформе Titorelli",
         emailHtml,
       );
+
+      result = true;
     }
+
+    return result;
   }
 
   async sendDeleteAccountConfirmationEmail(accountId: number) {
@@ -183,11 +189,6 @@ export class EmailService {
     account: Account,
     invite: AccountInvite,
   ) {
-    if (!invite.email)
-      throw new Error(
-        `In invite with id = ${invite.id} email props doesn't set `,
-      );
-
     const ownerMember = await this.prisma.accountMember.findFirst({
       where: {
         accountId: account.id,
@@ -205,7 +206,7 @@ export class EmailService {
 
     const emailHtml = await render(
       <AccountJoinInvite
-        inviteeEmail={invite.email}
+        inviteeEmail={email}
         inviterName={ownerMember.user.username}
         projectName={account.name}
         invitedRole={invite.role}
@@ -394,10 +395,7 @@ export class EmailService {
 
     await this.createResetPasswordRequest(user.id, token, expiredAt);
 
-    const url = new URL(
-      `/auth/restore/reset/${token}`,
-      this.siteOrigin,
-    );
+    const url = new URL(`/auth/restore/reset/${token}`, this.siteOrigin);
 
     return url.toString();
   }

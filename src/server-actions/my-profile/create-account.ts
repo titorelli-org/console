@@ -1,27 +1,30 @@
-'use server'
+"use server";
 
-import { AddAccountFormValues } from "@/components/my-profile/create-account-btn"
-import { activeAccountCookueName } from "@/constants"
-import { formDataToObject } from "@/lib/helpers/form-data"
-import { getUserInAction } from "@/lib/server/get-user-in-action"
-import { maskNumber } from "@/lib/server/keymask"
-import { securityCheck } from "@/lib/server/security-check"
-import { getAccountService, getSecurityService } from "@/lib/server/services/instances"
-import { createArrayWithSingleValue } from "@/lib/utils"
-import { cookies } from "next/headers"
-import { unauthorized } from "next/navigation"
+import { AddAccountFormValues } from "@/components/my-profile/create-account-btn";
+import { formDataToObject } from "@/lib/helpers/form-data";
+import { getUserInAction } from "@/lib/server/get-user-in-action";
+import { securityCheck } from "@/lib/server/security-check";
+import {
+  getAccountService,
+  getSecurityService,
+} from "@/lib/server/services/instances";
+import { createArrayWithSingleValue } from "@/lib/utils";
+import { unauthorized } from "next/navigation";
 
 export type CreateAccountActionResult = {
-  success: boolean
+  success: boolean;
   errors: {
-    root?: string
-    accountName?: string
-    members?: ({
-      identity?: string
-      role?: string
-    } | undefined)[]
-  }
-}
+    root?: string;
+    accountName?: string;
+    members?: (
+      | {
+          identity?: string;
+          role?: string;
+        }
+      | undefined
+    )[];
+  };
+};
 
 /**
  * @todo
@@ -37,37 +40,59 @@ export type CreateAccountActionResult = {
  *        Should such contact be validated?
  *    Need some kind of user stitching
  */
-export async function createAccount(form: FormData): Promise<CreateAccountActionResult> {
-  const accountService = getAccountService()
-  const c = await cookies()
-  const user = await getUserInAction()
-  const { accountName, members } = formDataToObject<AddAccountFormValues>(form)
+export async function createAccount(
+  form: FormData,
+): Promise<CreateAccountActionResult> {
+  const accountService = getAccountService();
+  const user = await getUserInAction();
+  const { accountName, members } = formDataToObject<AddAccountFormValues>(form);
 
-  if (!user)
-    unauthorized()
+  if (!user) unauthorized();
 
-  const securityService = getSecurityService()
+  const securityService = getSecurityService();
 
-  await securityCheck(securityService.userCanCreateAccount, user.id)
+  await securityCheck(securityService.userCanCreateAccount, user.id);
 
   if (!accountName) {
-    return { success: false, errors: { accountName: 'Название аккаунта не заполнено' } }
+    return {
+      success: false,
+      errors: { accountName: "Название аккаунта не заполнено" },
+    };
   }
 
   for (let i = 0; i < members.length; i++) {
-    const member = members[i]
+    const member = members[i];
 
     if (!member.identity) {
-      return { success: false, errors: { members: createArrayWithSingleValue({ identity: 'Идентификатор участника обязателен' }, i) } }
+      return {
+        success: false,
+        errors: {
+          members: createArrayWithSingleValue(
+            { identity: "Идентификатор участника обязателен" },
+            i,
+          ),
+        },
+      };
     }
 
-    if (!(['member', 'viewer'].includes(member.role))) {
-      return { success: false, errors: { members: createArrayWithSingleValue({ role: 'Роль участника не указана' }, i) } }
+    if (!["member"].includes(member.role)) {
+      return {
+        success: false,
+        errors: {
+          members: createArrayWithSingleValue(
+            { role: "Роль участника не указана" },
+            i,
+          ),
+        },
+      };
     }
   }
 
   if (await accountService.accountNameTaken(accountName)) {
-    return { success: false, errors: { accountName: 'Имя аккаунта занято. Впишите другое имя' } }
+    return {
+      success: false,
+      errors: { accountName: "Имя аккаунта занято. Впишите другое имя" },
+    };
   }
 
   // TODO:
@@ -81,33 +106,30 @@ export async function createAccount(form: FormData): Promise<CreateAccountAction
   //      send only one invite to this user
 
   try {
-    await accountService.createAccountAndInviteMembers(user.id, accountName, members)
-
-    /**
-     * If it's first account for user, set user's active account
-     */
-    {
-      const accountsCount = await accountService.countAccountsUserMemberOf(user.id)
-
-      if (accountsCount === 1 /* Single primary account */) {
-        const [singleAccount] = await accountService.getAccountsUserMemberOf(user.id)
-
-        c.set(activeAccountCookueName, maskNumber(singleAccount.id), { httpOnly: false, secure: false })
-      }
-    }
+    await accountService.createAccountAndInviteMembers(
+      user.id,
+      accountName,
+      members,
+    );
   } catch (_e) {
-    const e = _e as Error | null
+    const e = _e as Error | null;
 
     if (e != null) {
       if (/Account name taken/.test(e.message)) {
-        return { success: false, errors: { accountName: 'Название аккаута занято' } }
+        return {
+          success: false,
+          errors: { accountName: "Название аккаута занято" },
+        };
       }
 
-      console.error(e)
+      console.error(e);
     }
 
-    return { success: false, errors: { root: 'Не удалось создать аккаунт. Попробуйте позже' } }
+    return {
+      success: false,
+      errors: { root: "Не удалось создать аккаунт. Попробуйте позже" },
+    };
   }
 
-  return { success: true, errors: {} }
+  return { success: true, errors: {} };
 }

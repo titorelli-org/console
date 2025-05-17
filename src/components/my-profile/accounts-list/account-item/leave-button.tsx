@@ -43,7 +43,6 @@ const LeaveButtonInternal: FC<{
   );
   const formId = useId();
   const [{ success }, formAction] = useActionState<LeaveFormState>(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     leaveAccount as any,
     leaveFormInitialState,
   );

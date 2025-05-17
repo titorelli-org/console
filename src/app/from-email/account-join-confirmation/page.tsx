@@ -41,7 +41,7 @@ const getPageData = async (token: string) => {
 const createSignupHref = async (invite: AccountInvite | null) => {
   if (invite == null) return "/authorization/signup";
 
-  const url = new URL("/authorization/signup", "https://example.com");
+  const url = new URL("/auth/signup", "https://example.com");
   let setNoAccount = false;
 
   if (invite.email) {

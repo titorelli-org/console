@@ -40,7 +40,6 @@ export default async function SignupPage({
 
   return (
     <AuthorizationLayout coverImageVariant="signup">
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <SignupForm initialValues={initialValues} action={signup as any} />
     </AuthorizationLayout>
   );
