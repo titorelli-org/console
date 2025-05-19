@@ -229,7 +229,7 @@ export class TokenService {
     return [token, expiredAt];
   }
 
-  private async parseAccountJoinTokenFromEmail(token: string) {
+  public async parseAccountJoinTokenFromEmail(token: string) {
     const { payload } = await jwtVerify(token, this.secretKey);
 
     return payload as typeof payload & { inviteId: string };

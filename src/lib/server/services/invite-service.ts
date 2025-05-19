@@ -7,6 +7,7 @@ import {
   getEmailService,
   getEmailValidationService,
   getSmsService,
+  getTokenService,
 } from "./instances";
 import { prismaClient } from "../prisma-client";
 import type { IdentityTypes } from "./user-service";
@@ -29,6 +30,10 @@ export class InviteService {
 
   get accountService() {
     return getAccountService();
+  }
+
+  get tokenService() {
+    return getTokenService();
   }
 
   async sendInvites(invites: AccountInvite[]) {
@@ -75,7 +80,7 @@ export class InviteService {
     token: string,
   ): Promise<[Account | null, AccountInvite | null]> {
     const payload =
-      await this.emailService.parseAccountJoinTokenFromEmail(token);
+      await this.tokenService.parseAccountJoinTokenFromEmail(token);
 
     if (!payload) return [null, null];
 
