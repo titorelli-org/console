@@ -159,7 +159,7 @@ export class UserService {
 
   private async getUserIdFromResetPasswordToken(token: string) {
     const parsedToken =
-      await this.emailService.parseRestorePasswordTokenFromEmail(token);
+      await this.tokenService.parseRestorePasswordTokenFromEmail(token);
 
     if (!parsedToken || !parsedToken.sub) return null;
 
