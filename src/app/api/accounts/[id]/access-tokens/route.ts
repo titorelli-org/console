@@ -19,7 +19,7 @@ export const GET = createZodRoute()
       unauthorized()
 
     const accessTokensService = getAccessTokensService()
-    const accountTokens = await accessTokensService.list(accountId)
+    const accountTokens = await accessTokensService.listByAccountId(accountId)
 
     return accountTokens.map(mapAccessTokenDtoToVm) as AccessTokenVm[]
   })

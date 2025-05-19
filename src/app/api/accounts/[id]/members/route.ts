@@ -26,7 +26,7 @@ export const GET = createZodRoute()
   await securityCheck(securityService.userHasAccessToAccountMembers, user.id, accountId)
 
   const accountService = getAccountService()
-  const members = await accountService.getAccountMembers(accountId)
+  const members = await accountService.gitAccountMembersWhichNotInvited(accountId)
 
   return members.map(({ id, username }) => ({ id: maskNumber(id), username } as SelectorAccountMemberVm))
   })

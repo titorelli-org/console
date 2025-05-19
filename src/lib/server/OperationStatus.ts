@@ -20,7 +20,7 @@ export class OperationStatus implements OperationStatusShape {
     return new OperationStatus(false, maybeError);
   }
 
-  public static async call<Result, Args extends unknown[]>(
+  public static async invoke<Result, Args extends unknown[]>(
     run: (...args: Args) => Promise<Result>,
     ...args: Args
   ): Promise<OperationStatus> {
@@ -36,7 +36,7 @@ export class OperationStatus implements OperationStatusShape {
   public static bind<Result, Args extends unknown[]>(
     run: (...args: Args) => Promise<Result>,
   ) {
-    return (...args: Args) => OperationStatus.call(run, ...args);
+    return (...args: Args) => OperationStatus.invoke(run, ...args);
   }
 
   public static matchShape(o: object): o is OperationStatusShape {

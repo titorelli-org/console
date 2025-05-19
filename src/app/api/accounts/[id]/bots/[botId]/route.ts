@@ -32,7 +32,7 @@ export const POST = createZodRoute()
 
     const botService = getBotService();
 
-    return OperationStatus.call(() =>
+    return OperationStatus.invoke(() =>
       botService.update(mapUpdateRequestToDto(body)),
     );
   });

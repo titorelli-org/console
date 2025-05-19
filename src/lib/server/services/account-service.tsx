@@ -1,6 +1,5 @@
 import Generator from "do-usernames";
 import toKebab from "kebab-case";
-import { PrismaClient } from "@prisma/client";
 import { ProfileAccountRoles } from "@/types/my-profile";
 import { mapFilter, mapFilterAsync } from "@/lib/utils";
 import {
@@ -10,7 +9,7 @@ import {
 } from "./instances";
 import { prismaClient } from "../prisma-client";
 import { addHours } from "date-fns";
-import { first, forEach, groupBy } from "lodash";
+import { first, forEach, groupBy, property } from "lodash";
 
 export class AccountService {
   /**
@@ -20,7 +19,7 @@ export class AccountService {
    * таким же принципом
    */
   private usernameGenerator = new Generator();
-  private prisma: PrismaClient = prismaClient;
+  private prisma = prismaClient;
   private inviteValidityPeriodInHours = 72;
 
   get userService() {
@@ -58,7 +57,7 @@ export class AccountService {
    * это важно, чтобы все они были уникальными
    * Задача на подумать
    */
-  async createDefaultAccountForUser(userId: number) {
+  public async createDefaultAccountForUser(userId: number) {
     let name: string;
     let attemptLeft = 10;
 
@@ -68,7 +67,7 @@ export class AccountService {
       name = this.generateAccountName();
 
       if (!attemptLeft) throw new Error("Account name generation hangs");
-    } while (await this.accountNameTaken(name));
+    } while (await this.getIsAccountNameTaken(name));
 
     return this.createAccountWithSingleOwner(userId, name);
   }
@@ -77,20 +76,20 @@ export class AccountService {
    * @todo
    * Обработать сценарий, когда название аккаунта занято
    */
-  async createAccountWithNameForUser(userId: number, name: string) {
-    if (await this.accountNameTaken(name)) {
+  public async createAccountWithNameForUser(userId: number, name: string) {
+    if (await this.getIsAccountNameTaken(name)) {
       throw new Error(`Account name = "${name}" taken`);
     }
 
     return this.createAccountWithSingleOwner(userId, name);
   }
 
-  async createAccountAndInviteMembers(
+  public async createAccountAndInviteMembers(
     ownerUserId: number,
     accountName: string,
     members: { identity: string; role: string }[],
   ) {
-    if (await this.accountNameTaken(accountName)) {
+    if (await this.getIsAccountNameTaken(accountName)) {
       throw new Error(`Account nam
         e = "${name}" taken`);
     }
@@ -161,7 +160,7 @@ export class AccountService {
   /**
    * @todo Излишний запрос, подумать как избавиться
    */
-  async getUserRoleInAccount(userId: number, accountId: number) {
+  public async getUserRoleInAccount(userId: number, accountId: number) {
     const membership = await this.prisma.accountMember.findFirst({
       where: {
         userId,
@@ -169,16 +168,14 @@ export class AccountService {
       },
     });
 
-    if (membership?.role == null) return null;
-
-    return membership.role as ProfileAccountRoles;
+    return (membership?.role as ProfileAccountRoles) ?? null;
   }
 
   /**
    * @todo
    * Rewrite to query `accountMember`
    */
-  async getAccountsUserMemberOf(userId: number) {
+  public async getAccountsUserMemberOf(userId: number) {
     const user = await this.prisma.user.findFirst({
       where: {
         id: userId,
@@ -200,12 +197,12 @@ export class AccountService {
       },
     });
 
-    const accounts = user?.accountMembership.map(({ account }) => account);
+    const accounts = user?.accountMembership.map(property('account'));
 
     return accounts ?? [];
   }
 
-  async getAccountUserMemberOf(userId: number, accountId: number) {
+  public async getAccountUserMemberOf(userId: number, accountId: number) {
     const accountMember = await this.prisma.accountMember.findFirst({
       where: { userId, accountId },
       include: {
@@ -216,13 +213,13 @@ export class AccountService {
     return accountMember?.account ?? null;
   }
 
-  async countAccountsUserMemberOf(userId: number) {
+  public async countAccountsUserMemberOf(userId: number) {
     return this.prisma.accountMember.count({
       where: { userId },
     });
   }
 
-  async getAccountMembers(accountId: number) {
+  public async gitAccountMembersWhichNotInvited(accountId: number) {
     const memberships = await this.prisma.accountMember.findMany({
       where: {
         accountId,
@@ -233,10 +230,10 @@ export class AccountService {
       },
     });
 
-    return mapFilter(memberships, ({ user }) => user);
+    return mapFilter(memberships, property('user'));
   }
 
-  async countAccountMembers(accountId: number) {
+  public async countAccountMembers(accountId: number) {
     return this.prisma.accountMember.count({
       where: { accountId },
     });
@@ -245,7 +242,7 @@ export class AccountService {
   /**
    * @todo Добавить удаление других объектов
    */
-  async deleteAccount(accountId: number) {
+  public async deleteAccount(accountId: number) {
     await this.prisma.$transaction(async (t) => {
       await t.accessToken.deleteMany({
         where: {
@@ -287,7 +284,7 @@ export class AccountService {
     return true;
   }
 
-  async transferOwnership(accountId: number, newOwnerId: number) {
+  public async transferOwnership(accountId: number, newOwnerId: number) {
     return this.prisma.$transaction(async (t) => {
       const newOwnerMember = await t.accountMember.findFirst({
         where: { accountId, userId: newOwnerId },
@@ -312,7 +309,7 @@ export class AccountService {
     });
   }
 
-  async leaveAccount(accountId: number, userId: number) {
+  public async leaveAccount(accountId: number, userId: number) {
     await this.prisma.accountMember.deleteMany({
       where: { accountId, userId },
     });
@@ -320,11 +317,7 @@ export class AccountService {
     return true;
   }
 
-  private generateAccountName() {
-    return toKebab(this.usernameGenerator.getName(), false)!;
-  }
-
-  async accountNameTaken(name: string) {
+  public async getIsAccountNameTaken(name: string) {
     const count = await this.prisma.account.count({
       where: {
         name,
@@ -332,6 +325,10 @@ export class AccountService {
     });
 
     return count > 0;
+  }
+
+  private generateAccountName() {
+    return toKebab(this.usernameGenerator.getName(), false)!;
   }
 
   private async createAccountWithSingleOwner(userId: number, name: string) {

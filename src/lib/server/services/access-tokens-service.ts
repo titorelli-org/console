@@ -1,4 +1,3 @@
-import { randomBytes } from "crypto";
 import { prismaClient } from "../prisma-client";
 import { Prisma } from "@prisma/client";
 import { getTokenService } from "./instances";
@@ -10,7 +9,7 @@ export class AcccessTokenService {
     return getTokenService();
   }
 
-  public async list(accountId: number) {
+  public async listByAccountId(accountId: number) {
     return this.prisma.accessToken.findMany({
       where: { accountId, revoked: { not: true } },
     });

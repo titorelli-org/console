@@ -33,7 +33,7 @@ export const DELETE = createZodRoute()
       contactId,
     );
 
-    return OperationStatus.call(() =>
+    return OperationStatus.invoke(() =>
       userService.deleteContact(user.id, contactId),
     );
   });

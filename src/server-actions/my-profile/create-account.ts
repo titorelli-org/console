@@ -3,6 +3,7 @@
 import { AddAccountFormValues } from "@/components/my-profile/create-account-btn";
 import { formDataToObject } from "@/lib/helpers/form-data";
 import { getUserInAction } from "@/lib/server/get-user-in-action";
+import { OperationStatus } from "@/lib/server/OperationStatus";
 import { securityCheck } from "@/lib/server/security-check";
 import {
   getAccountService,
@@ -88,7 +89,7 @@ export async function createAccount(
     }
   }
 
-  if (await accountService.accountNameTaken(accountName)) {
+  if (await accountService.getIsAccountNameTaken(accountName)) {
     return {
       success: false,
       errors: { accountName: "Имя аккаунта занято. Впишите другое имя" },
