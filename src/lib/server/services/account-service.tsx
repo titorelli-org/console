@@ -197,7 +197,7 @@ export class AccountService {
       },
     });
 
-    const accounts = user?.accountMembership.map(property('account'));
+    const accounts = user?.accountMembership.map(({ account }) => account);
 
     return accounts ?? [];
   }
@@ -230,7 +230,7 @@ export class AccountService {
       },
     });
 
-    return mapFilter(memberships, property('user'));
+    return mapFilter(memberships, property("user"));
   }
 
   public async countAccountMembers(accountId: number) {

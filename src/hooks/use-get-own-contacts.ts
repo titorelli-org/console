@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "./use-api-client";
 import { UserContactVm } from "@/types/my-profile";
 

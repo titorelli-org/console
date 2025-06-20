@@ -1,8 +1,13 @@
 import { useMotionValue } from "motion/react";
 import { useEffect } from "react";
 
+export type UseMotionValueDefaults = {
+  width?: number;
+  height?: number;
+};
+
 export const useMotionWindowSize = (
-  defaults: { width?: number; height?: number } = { width: 0, height: 0 },
+  defaults: UseMotionValueDefaults = { width: 0, height: 0 },
 ) => {
   const width = useMotionValue<number>(defaults.width ?? 0);
   const height = useMotionValue<number>(defaults.height ?? 0);
