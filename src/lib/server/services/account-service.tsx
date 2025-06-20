@@ -168,7 +168,7 @@ export class AccountService {
       },
     });
 
-    return (membership?.role as ProfileAccountRoles) ?? null;
+    return (membership?.role as ProfileAccountRoles | undefined) ?? null;
   }
 
   /**

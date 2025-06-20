@@ -8,7 +8,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
-  getEmailService,
   getInviteService,
   getTokenService,
 } from "@/lib/server/services/instances";
@@ -17,10 +16,10 @@ import { maskNumber } from "@/lib/server/keymask";
 import { AccountInvite } from "@prisma/client";
 
 const getPageData = async (token: string) => {
-  const emailService = getEmailService();
   const inviteService = getInviteService();
+  const tokenService = getTokenService();
 
-  if (!(await emailService.validateAccountJoinTokenFromEmail(token)))
+  if (!(await tokenService.validateAccountJoinTokenFromEmail(token)))
     throw new Error("Token invalid or expired");
 
   const user = await getUserInPage();
