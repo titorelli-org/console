@@ -1,19 +1,14 @@
-import { createClient } from "@titorelli/client";
+import { createClient, serviceDiscovery } from "@titorelli/client";
 import { createZodRoute } from "next-zod-route";
 import { z } from "zod";
 import { env } from "@/lib/server/env";
 import { memoize } from "@/lib/server/service-memoize";
 
-const getTitorelli = memoize(() =>
-  createClient({
-    serviceUrl: env.TITORELLI_SERVICE_URL,
-    casUrl: "--not-in-use--",
-    clientId: "demo",
-    clientSecret: env.TITORELLI_DEMO_CLIENT_SECRET,
-    scope: ["predict"],
-    modelId: "generic",
-  }),
-);
+const getTitorelli = memoize(async () => {
+  const { modelOrigin } = await serviceDiscovery(env.SITE_ORIGIN);
+
+  return createClient("model", modelOrigin, "console");
+});
 
 export const POST = createZodRoute()
   .body(
@@ -22,8 +17,8 @@ export const POST = createZodRoute()
       text: z.string(),
     }),
   )
-  .handler(async (_req, { body: { tgUserId, text } }) => {
-    const titorelli = getTitorelli();
+  .handler(async (_req, { body: { text } }) => {
+    const titorelli = await getTitorelli();
 
-    return titorelli.predict({ tgUserId, text });
+    return titorelli.predict({ text });
   });

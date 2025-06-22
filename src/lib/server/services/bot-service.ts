@@ -1,27 +1,18 @@
 import slugify from "@sindresorhus/slugify";
 import { prismaClient } from "../prisma-client";
 import { BotState } from "@/types/bot";
-import { createClient } from "@titorelli/client";
+import {
+  serviceDiscovery,
+  createClient,
+  type BotsClient,
+} from "@titorelli/client";
 import { getAccessTokensService } from "./instances";
 import { mapAsync, mapFilterAsync } from "@/lib/utils";
 import { ManagedBot } from "@prisma/client";
+import { env } from "../env";
 
 export class BotService {
   private prisma = prismaClient;
-  private titorelli = createClient({
-    serviceUrl: process.env.TITORELLI_SERVICE_URL!,
-    casUrl: "--not-in-use--",
-    clientId: "console",
-    clientSecret: process.env.TITORELLI_CLIENT_SECRET!,
-    scope: [
-      "bots/create",
-      "bots/list",
-      "bots/update",
-      "bots/read",
-      "bots/remove",
-    ],
-    modelId: "generic",
-  });
 
   private get accessTokensService() {
     return getAccessTokensService();
@@ -96,7 +87,9 @@ export class BotService {
         );
       }
 
-      await this.titorelli.bots.create({
+      const bots = await this.getBotsClient();
+
+      await bots.create({
         id,
         accessToken,
         bypassTelemetry,
@@ -138,7 +131,9 @@ export class BotService {
 
         if (!newAccesstoken) throw new Error("New accessToken not exists");
 
-        await this.titorelli.bots.update(id, {
+        const bots = await this.getBotsClient();
+
+        await bots.update(id, {
           accessToken: newAccesstoken,
         });
       }
@@ -175,7 +170,9 @@ export class BotService {
       return [];
     }
 
-    const externalBots = (await this.titorelli.bots.list(paramsAccountId, {
+    const bots = await this.getBotsClient();
+
+    const externalBots = (await bots.list(paramsAccountId, {
       accessToken,
     })) as Awaited<{ id: number; accountId: number }[]>;
 
@@ -199,29 +196,52 @@ export class BotService {
   }
 
   public async remove(botId: number) {
+    const bots = await this.getBotsClient();
+
     return await this.prisma.$transaction(async (t) => {
-      await this.titorelli.bots.remove(botId);
+      await bots.remove(botId);
 
       await t.managedBot.delete({ where: { id: botId } });
     });
   }
 
   public async restartBotsWithNewToken(bots: ManagedBot[], token: string) {
+    const botsClient = await this.getBotsClient();
+
     return mapAsync(bots, async (bot) =>
-      this.titorelli.bots.update(bot.id, { accessToken: token }),
+      botsClient.update(bot.id, { accessToken: token }),
     );
   }
 
   public async getBotState(botId: number) {
-    return (await this.titorelli.bots.getState(botId)) as Awaited<BotState>;
+    const bots = await this.getBotsClient();
+
+    return (await bots.getState(botId)) as Awaited<BotState>;
+  }
+
+  private _botsClient: BotsClient | null = null;
+  private async getBotsClient() {
+    if (this._botsClient) return this._botsClient;
+
+    const { apiOrigin } = await serviceDiscovery(env.SITE_ORIGIN);
+
+    const bots = await createClient("bots", apiOrigin, "console");
+
+    this._botsClient = bots;
+
+    return bots;
   }
 
   private async start(botId: number) {
-    return this.titorelli.bots.update(botId, { state: "starting" });
+    const bots = await this.getBotsClient();
+
+    return bots.update(botId, { state: "starting" });
   }
 
   private async stop(botId: number) {
-    return this.titorelli.bots.update(botId, { state: "stopping" });
+    const bots = await this.getBotsClient();
+
+    return bots.update(botId, { state: "stopping" });
   }
 
   private async tgGetMe(botToken: string) {
