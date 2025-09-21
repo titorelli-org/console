@@ -1,4 +1,4 @@
-FROM node:21.7 AS builder
+FROM node:22.19 AS builder
 
 ENV NODE_ENV=production
 # ENV DATABASE_URL="file:./dev.db"
