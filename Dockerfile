@@ -11,7 +11,7 @@ RUN npm install --include=dev
 # RUN npx prisma db push
 RUN npm run build
 
-FROM node:21.7
+FROM node:22.19
 
 ENV NODE_ENV=production
 # ENV DATABASE_URL="file:./dev.db"
