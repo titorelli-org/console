@@ -7,7 +7,13 @@ import { memoize } from "@/lib/server/service-memoize";
 const getTitorelli = memoize(async () => {
   const { modelOrigin } = await serviceDiscovery(env.SITE_ORIGIN);
 
-  return createClient("model", modelOrigin, "console");
+  return createClient("model", {
+    baseUrl: modelOrigin,
+    auth: {
+      clientName: "console",
+      initialAccessToken: env.INITIAL_ACCESS_TOKEN,
+    },
+  });
 });
 
 export const POST = createZodRoute()

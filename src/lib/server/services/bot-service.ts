@@ -225,7 +225,13 @@ export class BotService {
 
     const { apiOrigin } = await serviceDiscovery(env.SITE_ORIGIN);
 
-    const bots = await createClient("bots", apiOrigin, "console");
+    const bots = await createClient("bots", {
+      baseUrl: apiOrigin,
+      auth: {
+        clientName: "console",
+        initialAccessToken: env.INITIAL_ACCESS_TOKEN,
+      },
+    });
 
     this._botsClient = bots;
 

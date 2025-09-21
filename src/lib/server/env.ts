@@ -18,6 +18,7 @@ const config = {
   OO_AUTH_CRED: str(),
   KEYMASK_SEED: str(),
   NEXT_PUBLIC_YM_COUNTER_ID: num(),
+  INITIAL_ACCESS_TOKEN: str(),
 } as const;
 
 export let env: CleanedEnv<typeof config>;
